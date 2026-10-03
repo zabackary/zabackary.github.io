@@ -1,0 +1,32 @@
+---
+import type { CollectionEntry } from "astro:content";
+import Blob from "./Blob.astro";
+import Card from "./Card.astro";
+import ChipList from "./ChipList.astro";
+
+interface Props {
+  project: CollectionEntry<"projects">;
+}
+
+const { project } = Astro.props;
+const { name, description, glyph, tone, status, tags } = project.data;
+---
+
+<Card href={`/projects/${project.id}`} {tone}>
+  <Blob>{glyph}</Blob>
+  <h3>{name}</h3>
+  <p>{description}</p>
+  <ChipList items={[status, ...tags]} />
+</Card>
+
+<style>
+  h3 {
+    margin: 0;
+    font-size: 1.75rem;
+    font-weight: 700;
+    line-height: 1.1;
+  }
+  p {
+    margin: 0;
+  }
+</style>

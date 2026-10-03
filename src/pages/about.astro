@@ -1,0 +1,31 @@
+---
+import Blob from "../components/Blob.astro";
+import Card from "../components/Card.astro";
+import HeroCard from "../components/HeroCard.astro";
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="About — zabackary">
+  <HeroCard tone="tertiary">
+    <p class="label">About</p>
+    <h1 class="display">Hi, I'm<br />Zachary.</h1>
+    <Blob slot="aside" size="large">👋</Blob>
+  </HeroCard>
+
+  <div class="grid">
+    <Card tone="secondary">
+      <h2 class="headline">What I do</h2>
+      <p>I make web apps, games and tools, mostly to scratch my own itch. Placeholder copy; swap in your own.</p>
+    </Card>
+    <Card tone="primary">
+      <h2 class="headline">Elsewhere</h2>
+      <p><a href="https://github.com/zabackary">GitHub</a></p>
+    </Card>
+  </div>
+</Layout>
+
+<style>
+  .grid {
+    margin-top: 1rem;
+  }
+</style>

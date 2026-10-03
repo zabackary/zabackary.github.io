@@ -1,0 +1,43 @@
+---
+interface Props {
+  size?: "small" | "large";
+}
+
+const { size = "small" } = Astro.props;
+---
+
+<div class:list={["blob", size]} aria-hidden="true">
+  <slot />
+</div>
+
+<style>
+  /* Morphing shape that holds a glyph; colours come from the surrounding tone */
+  .blob {
+    display: grid;
+    place-items: center;
+    aspect-ratio: 1;
+    background: var(--fg);
+    color: var(--bg);
+    border-radius: 62% 38% 55% 45% / 45% 58% 42% 55%;
+    animation: morph 9s ease-in-out infinite alternate;
+  }
+  .small {
+    width: 5rem;
+    font-size: 2.25rem;
+  }
+  .large {
+    width: min(18rem, 60vw);
+    font-size: 6rem;
+  }
+
+  @keyframes morph {
+    50% {
+      border-radius: 40% 60% 38% 62% / 60% 40% 60% 40%;
+      transform: rotate(8deg);
+    }
+    100% {
+      border-radius: 55% 45% 62% 38% / 38% 62% 45% 55%;
+      transform: rotate(-6deg);
+    }
+  }
+</style>

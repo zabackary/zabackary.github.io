@@ -1,0 +1,28 @@
+---
+import type { Tone } from "../types";
+
+interface Props {
+  tone?: Tone;
+}
+
+const { tone = "primary" } = Astro.props;
+---
+
+<section class="hero" data-tone={tone}>
+  <div class="text"><slot /></div>
+  <slot name="aside" />
+</section>
+
+<style>
+  .hero {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    align-items: center;
+    justify-content: space-between;
+    padding: clamp(1.5rem, 5vw, 3.5rem);
+    border-radius: 3rem;
+    background: var(--bg);
+    color: var(--fg);
+  }
+</style>

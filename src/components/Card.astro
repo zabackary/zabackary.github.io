@@ -1,0 +1,39 @@
+---
+import type { Tone } from "../types";
+
+interface Props {
+  tone?: Tone;
+  /** Makes the card a link. Otherwise it's a plain section. */
+  href?: string;
+}
+
+const { tone = "primary", href } = Astro.props;
+const Tag = href ? "a" : "section";
+---
+
+<Tag class="card" data-tone={tone} href={href}>
+  <slot />
+</Tag>
+
+<style>
+  .card {
+    display: grid;
+    gap: 1rem;
+    padding: 1.75rem;
+    border-radius: 2rem;
+    background: var(--bg);
+    color: var(--fg);
+    text-decoration: none;
+    transition:
+      border-radius 0.55s var(--spring-slow),
+      transform 0.55s var(--spring-slow);
+  }
+  /* Only links react to hover */
+  a.card:hover {
+    border-radius: 3.5rem 0.75rem 3.5rem 0.75rem;
+    transform: translateY(-4px);
+  }
+  a.card:active {
+    transform: scale(0.98);
+  }
+</style>

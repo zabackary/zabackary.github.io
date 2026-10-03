@@ -1,0 +1,49 @@
+---
+import { getCollection, render } from "astro:content";
+import Blob from "../../components/Blob.astro";
+import Button from "../../components/Button.astro";
+import ChipList from "../../components/ChipList.astro";
+import HeroCard from "../../components/HeroCard.astro";
+import Layout from "../../layouts/Layout.astro";
+
+export async function getStaticPaths() {
+  const projects = await getCollection("projects");
+  return projects.map((project) => ({ params: { id: project.id }, props: { project } }));
+}
+
+const { project } = Astro.props;
+const { name, description, status, tags, tone, glyph, link } = project.data;
+const { Content } = await render(project);
+---
+
+<Layout title={`${name} — zabackary`}>
+  <HeroCard {tone}>
+    <p class="label">{status}</p>
+    <h1 class="display">{name}</h1>
+    <p class="description">{description}</p>
+    <ChipList items={tags} />
+    <Blob slot="aside" size="large">{glyph}</Blob>
+  </HeroCard>
+
+  <article class="prose"><Content /></article>
+
+  <div class="actions">
+    <Button href="/" variant="tonal">← All projects</Button>
+    {link && <Button href={link}>View project</Button>}
+  </div>
+</Layout>
+
+<style>
+  .display {
+    font-size: clamp(2.5rem, 9vw, 5.5rem);
+  }
+  .description {
+    max-width: 32rem;
+  }
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 2rem;
+  }
+</style>

@@ -1,0 +1,47 @@
+---
+interface Props {
+  href?: string;
+  variant?: "filled" | "tonal";
+}
+
+const { href, variant = "filled" } = Astro.props;
+const Tag = href ? "a" : "button";
+---
+
+<Tag class:list={["button", variant]} href={href}>
+  <slot />
+</Tag>
+
+<style>
+  /* Pill at rest, squarer on hover and press */
+  .button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.9rem 1.75rem;
+    border: 0;
+    border-radius: 999px;
+    font: 600 1rem var(--font);
+    text-decoration: none;
+    cursor: pointer;
+    transition:
+      border-radius 0.35s var(--spring-fast),
+      transform 0.35s var(--spring-fast);
+  }
+  .button:hover {
+    border-radius: 1.25rem;
+  }
+  .button:active {
+    border-radius: 0.5rem;
+    transform: scale(0.97);
+  }
+
+  .filled {
+    background: var(--md-primary);
+    color: var(--md-on-primary);
+  }
+  .tonal {
+    background: var(--md-secondary-container);
+    color: var(--md-on-secondary-container);
+  }
+</style>
