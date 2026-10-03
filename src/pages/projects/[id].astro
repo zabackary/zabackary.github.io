@@ -5,6 +5,7 @@ import Button from "../../components/Button.astro";
 import ChipList from "../../components/ChipList.astro";
 import HeroCard from "../../components/HeroCard.astro";
 import Layout from "../../layouts/Layout.astro";
+import { projectTransitions } from "../../transitions";
 
 export async function getStaticPaths() {
   const projects = await getCollection("projects");
@@ -14,15 +15,16 @@ export async function getStaticPaths() {
 const { project } = Astro.props;
 const { name, description, status, tags, tone, glyph, link } = project.data;
 const { Content } = await render(project);
+const names = projectTransitions(project.id);
 ---
 
 <Layout title={`${name} — zabackary`}>
-  <HeroCard {tone}>
+  <HeroCard {tone} transitionName={names.container}>
     <p class="label">{status}</p>
     <h1 class="display">{name}</h1>
     <p class="description">{description}</p>
     <ChipList items={tags} />
-    <Blob slot="aside" size="large">{glyph}</Blob>
+    <Blob slot="aside" size="large" transitionName={names.blob}>{glyph}</Blob>
   </HeroCard>
 
   <article class="prose"><Content /></article>

@@ -3,12 +3,18 @@ import type { Tone } from "../types";
 
 interface Props {
   tone?: Tone;
+  /** Shared view-transition name; pairs this hero with a card of the same name on the previous page. */
+  transitionName?: string;
 }
 
-const { tone = "primary" } = Astro.props;
+const { tone = "primary", transitionName } = Astro.props;
 ---
 
-<section class="hero" data-tone={tone}>
+<section
+  class="hero"
+  data-tone={tone}
+  style={transitionName && `view-transition-name: ${transitionName}; view-transition-class: shared`}
+>
   <div class="text"><slot /></div>
   <slot name="aside" />
 </section>

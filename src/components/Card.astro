@@ -5,13 +5,20 @@ interface Props {
   tone?: Tone;
   /** Makes the card a link. Otherwise it's a plain section. */
   href?: string;
+  /** Shared view-transition name; pairs this card with an element of the same name on the next page. */
+  transitionName?: string;
 }
 
-const { tone = "primary", href } = Astro.props;
+const { tone = "primary", href, transitionName } = Astro.props;
 const Tag = href ? "a" : "section";
 ---
 
-<Tag class="card" data-tone={tone} href={href}>
+<Tag
+  class="card"
+  data-tone={tone}
+  href={href}
+  style={transitionName && `view-transition-name: ${transitionName}; view-transition-class: shared`}
+>
   <slot />
 </Tag>
 
@@ -29,9 +36,15 @@ const Tag = href ? "a" : "section";
       transform 0.55s var(--spring-slow);
   }
   /* Only links react to hover */
-  a.card:hover {
+  @media (hover: hover) {
+    a.card:hover {
+      border-radius: 3.5rem 0.75rem 3.5rem 0.75rem;
+      transform: translateY(-4px);
+    }
+  }
+  /* Keyboard focus gets the same shape morph as hover */
+  a.card:focus-visible {
     border-radius: 3.5rem 0.75rem 3.5rem 0.75rem;
-    transform: translateY(-4px);
   }
   a.card:active {
     transform: scale(0.98);

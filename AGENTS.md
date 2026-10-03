@@ -20,6 +20,7 @@ Personal project portfolio (Astro, static, no framework runtime). Material 3 Exp
 4. **Use the tokens.** Colours come from `--md-*` variables and tone roles in `src/styles/global.css`; no hardcoded hex in components. Motion uses the shared easing variables.
 5. **Verify before reporting done:** `pnpm astro check` and `pnpm build` must pass. For visual or interaction changes, look at it in a browser, don't just rely on the build.
 6. **Keep docs current.** After any big change (new component, new page type, changed convention, changed design decision), update the relevant doc *and* its summary line (see below).
+7. **Ask questions.** If there are any problems, it is fine to ask for human help.
 
 ## Doc maintenance
 

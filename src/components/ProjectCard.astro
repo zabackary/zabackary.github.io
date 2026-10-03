@@ -3,6 +3,7 @@ import type { CollectionEntry } from "astro:content";
 import Blob from "./Blob.astro";
 import Card from "./Card.astro";
 import ChipList from "./ChipList.astro";
+import { projectTransitions } from "../transitions";
 
 interface Props {
   project: CollectionEntry<"projects">;
@@ -10,10 +11,11 @@ interface Props {
 
 const { project } = Astro.props;
 const { name, description, glyph, tone, status, tags } = project.data;
+const names = projectTransitions(project.id);
 ---
 
-<Card href={`/projects/${project.id}`} {tone}>
-  <Blob>{glyph}</Blob>
+<Card href={`/projects/${project.id}`} {tone} transitionName={names.container}>
+  <Blob transitionName={names.blob}>{glyph}</Blob>
   <h3>{name}</h3>
   <p>{description}</p>
   <ChipList items={[status, ...tags]} />

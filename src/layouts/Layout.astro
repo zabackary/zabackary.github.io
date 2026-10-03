@@ -1,6 +1,7 @@
 ---
 import NavBar from "../components/NavBar.astro";
 import "../styles/global.css";
+import "../styles/transitions.css";
 
 interface Props {
   title?: string;
@@ -13,7 +14,7 @@ const { title = "zabackary" } = Astro.props;
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -25,7 +26,8 @@ const { title = "zabackary" } = Astro.props;
     <title>{title}</title>
   </head>
   <body>
+    <a class="skip-link" href="#main">Skip to content</a>
     <NavBar />
-    <main><slot /></main>
+    <main id="main" tabindex="-1"><slot /></main>
   </body>
 </html>

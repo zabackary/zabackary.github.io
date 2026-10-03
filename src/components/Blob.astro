@@ -1,12 +1,18 @@
 ---
 interface Props {
   size?: "small" | "large";
+  /** Shared view-transition name, so the blob carries over to the same-named blob on the next page. */
+  transitionName?: string;
 }
 
-const { size = "small" } = Astro.props;
+const { size = "small", transitionName } = Astro.props;
 ---
 
-<div class:list={["blob", size]} aria-hidden="true">
+<div
+  class:list={["blob", size]}
+  aria-hidden="true"
+  style={transitionName && `view-transition-name: ${transitionName}; view-transition-class: shared`}
+>
   <slot />
 </div>
 

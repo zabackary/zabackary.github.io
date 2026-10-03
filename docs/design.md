@@ -1,6 +1,6 @@
 # Design and feel
 
-> Summary: Feel is the top priority. Expressive = big rounded shapes that morph, springy overshoot motion, heavy wide display type, tonal colour containers. Every interactive element must handle hover, focus-visible, active, keyboard and touch. Known gaps: no focus-visible styles yet, hover not gated for touch, no skip link.
+> Summary: Feel is the top priority. Expressive = big rounded shapes that morph, springy overshoot motion, heavy wide display type, tonal colour containers. Every interactive element must handle hover (gated to `(hover: hover)`), focus-visible (one global ring in `global.css` that pops in 0 → 8px → 3px, after the M3E ButtonBase ring), active, keyboard and touch. Skip link and 44px tap targets are in place. Page navigation uses native cross-document view transitions (card ↔ hero container transform, shared blob, sliding nav pill, fade/rise for the rest; off under reduced motion). Remaining gaps: font hosting, theme toggle, real screenshots.
 
 Last updated: 2026-10-03
 
@@ -14,6 +14,7 @@ Inspired by Material 3 Expressive, with our own twists welcome. The site should 
 - **Motion**: spring-like overshoot for spatial changes (`--spring-fast`, `--spring-slow`), the gentler `--effects` curve for colour/opacity. Durations ~200ms for effects, 350-550ms for shape/position.
 - **Type**: `.display` is heavy and wide (Roboto Flex, `wdth` 125). Body is regular weight. Big contrast between the two is the point.
 - **Colour**: tonal containers (`primary`/`secondary`/`tertiary`) from `--md-*` tokens; light and dark both supported. Check both when changing colours.
+- **Page transitions**: cross-document View Transitions (`src/styles/transitions.css`), no JS. A project card morphs into its detail hero and back (container transform) with the blob carried across; the nav's current pill slides; other content fades and rises. To share an element between pages, give both the same `view-transition-name` plus `view-transition-class: shared` via the `transitionName` prop on `Card`/`HeroCard`/`Blob`. Names must be unique per page. Firefox lacks cross-document support and just navigates normally.
 - **Our twists**: the continuously morphing `Blob`; project glyphs. Add more if they fit, and record them here.
 
 ## Interaction checklist
@@ -45,11 +46,6 @@ Run through this for any new or changed interactive element.
 
 ## Known gaps (do these when touching the area)
 
-- No `:focus-visible` styles on `Button`, `Card` links, `NavBar` links; browser defaults only, and they may be clipped by the rounded shapes.
-- Hover effects (`Button`, `Card`, `NavBar`) aren't gated behind `(hover: hover)`.
-- Tap target sizes haven't been audited, especially nav links on small screens.
-- No skip-to-content link.
 - `Layout` loads Roboto Flex from Google Fonts: no `font-display` fallback tuning, and a third-party request. Consider self-hosting.
 - Light/dark follows the system only; no manual toggle.
-- No page transitions yet; worth trying View Transitions for navigation.
 - No real screenshots; cards use glyph blobs.

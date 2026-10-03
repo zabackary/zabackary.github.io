@@ -38,7 +38,31 @@ body {
   padding: 1rem 1rem 6rem;
 }
 main { max-width: 64rem; margin: 0 auto; }
+main:focus { outline: none; } /* only focused by the skip link */
 a { color: var(--md-primary); }
+html { scroll-padding-top: 5rem; } /* keep focused elements out from under the sticky nav */
+
+/* One focus ring for everything; outlines follow border-radius, so it tracks morphing shapes.
+   Pops in (0 -> 8px -> 3px) like the M3 Expressive ring. */
+:focus-visible {
+  outline: 3px solid var(--md-primary); outline-offset: 3px;
+  animation: focus-ring 0.6s var(--effects);
+}
+@keyframes focus-ring {
+  from { outline-width: 0; }
+  25%  { outline-width: 8px; }
+  to   { outline-width: 3px; }
+}
+
+.skip-link {
+  position: absolute; left: 1rem; top: 0.75rem; z-index: 20;
+  padding: 0.75rem 1.25rem; border-radius: 999px;
+  background: var(--md-primary); color: var(--md-on-primary);
+  font-weight: 600; text-decoration: none;
+  transform: translateY(-200%);
+  transition: transform 0.35s var(--spring-fast);
+}
+.skip-link:focus-visible { transform: none; outline-color: var(--md-on-surface); }
 
 /* Expressive type: heavy, wide display; light, tight body */
 .display {

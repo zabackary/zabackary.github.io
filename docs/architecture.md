@@ -1,6 +1,6 @@
 # Architecture
 
-> Summary: Static Astro site. Pages in `src/pages`, one `projects` content collection in `src/content/projects`, small scoped-style components in `src/components`, tokens and type in one global stylesheet. No client JS and no UI library; M3 Expressive is implemented by hand.
+> Summary: Static Astro site. Pages in `src/pages`, one `projects` content collection in `src/content/projects`, small scoped-style components in `src/components`, tokens and type in one global stylesheet. No client JS (page transitions are native CSS view transitions, rules in `styles/transitions.css`) and no UI library; M3 Expressive is implemented by hand.
 
 Last updated: 2026-10-03
 
@@ -22,6 +22,7 @@ src/
   components/            see below
   styles/global.css      tokens, base, type classes, tone roles, .grid, .prose
   types.ts               shared types (Tone)
+  transitions.ts         view-transition names pairing a project card with its hero
 docs/                    you are here
 ```
 
@@ -43,7 +44,7 @@ All have scoped `<style>`; they take colour from the surrounding tone, so they d
 
 - **Tokens** live at the top of `global.css`: `--md-*` colour roles (light/dark via `prefers-color-scheme`), and the easing variables `--spring-fast`, `--spring-slow`, `--effects`.
 - **Tone roles**: `data-tone="primary|secondary|tertiary"` sets `--bg` / `--fg`. Containers set the tone; children read `--bg`/`--fg`.
-- **Global CSS is only** tokens, base element styles, type classes (`.display`, `.headline`, `.label`), tone roles, `.grid`, `.prose`. Everything else goes in the component or page that uses it.
+- **Global CSS is only** `transitions.css` (`::view-transition-*` pseudo-elements can't be scoped) and, in `global.css`, tokens, base element styles, type classes (`.display`, `.headline`, `.label`), tone roles, `.grid`, `.prose`. Everything else goes in the component or page that uses it.
 - Scoped styles don't reach slotted content. Style slotted children from the component that renders them.
 - Prefer a new small component over a new global class. Don't add one for a single use though.
 
