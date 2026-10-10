@@ -6,6 +6,7 @@ import HeroCard from "../components/HeroCard.astro";
 import ProjectCarousel from "../components/ProjectCarousel.astro";
 import Layout from "../layouts/Layout.astro";
 import Divider from "../components/Divider.astro";
+import OnlineAccounts from "../components/OnlineAccounts.astro";
 
 // Newest first; undated projects go last
 const recent = (await getCollection("projects"))
@@ -42,6 +43,10 @@ const recent = (await getCollection("projects"))
       projects
     </Fragment>
   </ProjectCarousel>
+
+  <Divider />
+
+  <OnlineAccounts />
 
   <Divider />
 

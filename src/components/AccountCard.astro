@@ -1,0 +1,56 @@
+---
+import type { Tone } from "../types";
+import Card from "./Card.astro";
+
+interface Props {
+  tone: Tone;
+  href: string;
+  /** Service name, e.g. "GitHub". */
+  name: string;
+  /** Username shown under the name. */
+  handle: string;
+}
+
+const { tone, href, name, handle } = Astro.props;
+---
+
+<Card {tone} {href}>
+  <span class="row">
+    <span class="logo" aria-hidden="true"><slot name="logo" /></span>
+    <span class="text">
+      <span class="name">{name}</span>
+      <span class="handle">{handle}</span>
+    </span>
+  </span>
+</Card>
+
+<style>
+  .row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .logo {
+    display: grid;
+    place-items: center;
+    width: 3.5rem;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--fg);
+    color: var(--bg);
+  }
+  .logo :global(svg) {
+    width: 2rem;
+    fill: currentColor;
+  }
+  .text {
+    display: grid;
+  }
+  .name {
+    font-size: 1.5rem;
+    font-weight: 800;
+  }
+  .handle {
+    opacity: 0.8;
+  }
+</style>

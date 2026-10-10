@@ -1,8 +1,8 @@
 # Architecture
 
-> Summary: Static Astro site. About is the home page (`/`, with a carousel of the 3 most recent projects); all projects are at `/projects`. Pages in `src/pages`, one `projects` content collection in `src/content/projects`, small scoped-style components in `src/components`, tokens and type in one global stylesheet. Page transitions are native CSS view transitions (`styles/transitions.css`); the only client JS is the `Ripple` custom element, a small WebGL shader. No UI library; M3 Expressive is implemented by hand.
+> Summary: Static Astro site. About is the home page (`/`, with a carousel of the 3 most recent projects and an online-accounts section); all projects are at `/projects`. Pages in `src/pages`, one `projects` content collection in `src/content/projects`, small scoped-style components in `src/components`, tokens and type in one global stylesheet. Page transitions are native CSS view transitions (`styles/transitions.css`); the only client JS is the `Ripple` custom element, a small WebGL shader. No UI library; M3 Expressive is implemented by hand.
 
-Last updated: 2026-10-10 (added `Divider`, `--md-outline` token)
+Last updated: 2026-10-10 (added `SectionHeader`, `OnlineAccounts`, `AccountCard`)
 
 ## Why bespoke CSS instead of `@material/web`
 
@@ -41,6 +41,9 @@ All have scoped `<style>`; they take colour from the surrounding tone, so they d
 | `Card` | Link (with `href`) or plain section. Only links animate on hover and ripple. `calm` uses `surface-container-high` and skips the corner morph. |
 | `ProjectCard` | A collection entry rendered as a `Card`. `compact` drops description and tags and uses the calm card instead of the project colour. |
 | `ProjectCarousel` | Horizontal scroll-snap row of equal-size compact `ProjectCard`s, led by a vertical `label` slot ending in a cookie `IconButton` to `/projects`. Used on About, under the hero. |
+| `SectionHeader` | Big vertical `<h2>` label. `align`: `left` (reads bottom-to-top, sits before its content) / `right` (reads top-to-bottom, sits after it). Used by `ProjectCarousel` and `OnlineAccounts`. |
+| `OnlineAccounts` | About-page section: GitHub and Scratch `AccountCard`s with a right-aligned `SectionHeader`. Add an account by adding an `<li>` with an inline SVG logo. The Scratch logo is a placeholder cat head; swap for the official mark. |
+| `AccountCard` | Link `Card` with a tone-coloured round logo (`logo` slot, SVG filled with `currentColor`), service name and handle. |
 | `Divider` | Wavy `<hr>`: a tiled SVG mask filled with `color` (any CSS colour, default `var(--md-outline)`). Decorative, no interaction states. |
 | `IconButton` | Link with a Material Symbols arrow (inlined SVG, no font) on a 9-lobed cookie shape that turns on hover and squashes on press. Has a `Ripple`. |
 | `HeroCard` | Big page header; default slot + named `aside` slot. |

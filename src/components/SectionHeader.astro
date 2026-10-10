@@ -1,0 +1,43 @@
+---
+interface Props {
+  /** Which side of its section the header sits on. */
+  align?: "left" | "right";
+}
+
+const { align = "left" } = Astro.props;
+---
+
+<h2 class:list={["section-header", align]}>
+  <slot />
+</h2>
+
+<style>
+  /* Big vertical label. Left reads bottom-to-top, right reads top-to-bottom, so both face their section */
+  .section-header {
+    margin: 0;
+    padding-inline: 0.5rem 1rem;
+    align-content: center;
+
+    font-weight: 800;
+    font-size: 2.5rem;
+    text-align: center;
+    font-variation-settings: "wdth" 350;
+    line-height: 0.8;
+
+    color: var(--md-on-surface-variant);
+    text-decoration: underline;
+    text-decoration-thickness: 0.15em;
+    text-underline-offset: -0.15em;
+    text-decoration-color: var(--md-surface-container-highest);
+
+    writing-mode: vertical-rl;
+  }
+  .left {
+    transform: rotate(180deg);
+    margin-right: 0.5rem;
+  }
+  .right {
+    padding-inline: 1rem 0.5rem;
+    margin-left: 0.5rem;
+  }
+</style>

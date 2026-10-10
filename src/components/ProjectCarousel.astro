@@ -2,6 +2,7 @@
 import type { CollectionEntry } from "astro:content";
 import IconButton from "./IconButton.astro";
 import ProjectCard from "./ProjectCard.astro";
+import SectionHeader from "./SectionHeader.astro";
 
 interface Props {
   projects: CollectionEntry<"projects">[];
@@ -12,7 +13,7 @@ const { projects } = Astro.props;
 
 <ul>
   <li class="label">
-    <slot name="label" />
+    <SectionHeader align="left"><slot name="label" /></SectionHeader>
   </li>
   {projects.map((project) => (
     <li>
@@ -43,24 +44,6 @@ const { projects } = Astro.props;
   }
   .label {
     flex: 0 0 auto;
-    align-content: center;
-    padding-inline: 0.5rem 1rem;
-
-    font-weight: 800;
-    font-size: 2.5rem;
-    text-align: center;
-    font-variation-settings: "wdth" 350;
-
-    color: var(--md-on-surface-variant);
-    text-decoration: underline;
-    text-decoration-thickness: 0.15em;
-    text-underline-offset: -0.15em;
-    text-decoration-color: var(--md-surface-container-highest);
-
-    writing-mode: vertical-rl;
-    transform: rotate(180deg);
-    line-height: 0.8;
-    margin-right: 0.5rem;
   }
   .more {
     flex: 0 0 auto;
