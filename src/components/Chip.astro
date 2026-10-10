@@ -35,14 +35,12 @@ const Tag = href ? "a" : "span";
     -webkit-tap-highlight-color: transparent;
     transition:
       background 0.2s var(--effects),
-      border-radius 0.45s var(--spring-fast),
-      scale 0.45s var(--spring-fast);
+      border-radius 0.45s var(--spring-fast);
   }
   a.chip:focus-visible {
     border-radius: 0.9rem;
   }
   a.chip:active {
-    scale: 0.94;
     border-radius: 0.9rem;
   }
   @media (hover: hover) {

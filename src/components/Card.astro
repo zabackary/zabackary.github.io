@@ -11,7 +11,7 @@ interface Props {
   href?: string;
   /** Shared view-transition name; pairs this card with an element of the same name on the next page. */
   transitionName?: string;
-  /** Neutral surface colour, and no corner morph (hover tints, press scales; nothing translates). */
+  /** Neutral surface colour, and no corner morph (hover tints). */
   calm?: boolean;
 }
 
@@ -49,14 +49,11 @@ const style = [
     -webkit-tap-highlight-color: transparent;
     transition:
       background 0.2s var(--effects),
-      border-radius 0.55s var(--spring-slow),
-      translate 0.55s var(--spring-slow),
-      scale 0.55s var(--spring-slow);
+      border-radius 0.55s var(--spring-slow);
   }
   /* Only links react to hover */
   @media (hover: hover) {
     a.card:not(.calm):hover {
-      translate: 0 -4px;
       border-radius: 3.5rem 0.75rem 3.5rem 0.75rem;
     }
   }
@@ -65,9 +62,6 @@ const style = [
     border-radius: 3.5rem 0.75rem 3.5rem 0.75rem;
   }
   /* Touch has no hover, so pressing is where the morph happens */
-  a.card:active {
-    scale: 0.98;
-  }
   a.card:not(.calm):active {
     border-radius: 3.5rem 0.75rem 3.5rem 0.75rem;
   }

@@ -209,7 +209,6 @@ const contexts = [
     animation: wobble 6s ease-in-out infinite alternate;
     animation-delay: calc(var(--i) * -1.7s);
     transition:
-      scale 0.45s var(--spring-fast),
       rotate 0.45s var(--spring-fast),
       background 0.2s var(--effects),
       color 0.2s var(--effects);
@@ -223,21 +222,12 @@ const contexts = [
     }
   }
 
-  /* Still learning: hollow, dashed and slowly breathing, i.e. not fully grown yet */
+  /* Still learning: hollow and dashed, i.e. not fully grown yet */
   .learning .pill {
     background: transparent;
     color: var(--fg);
     outline: 2px dashed var(--fg);
     outline-offset: -2px;
-    animation:
-      wobble 6s ease-in-out infinite alternate,
-      breathe 2.4s ease-in-out infinite alternate;
-    animation-delay: calc(var(--i) * -1.7s), calc(var(--i) * -1.2s);
-  }
-  @keyframes breathe {
-    to {
-      scale: 1.06;
-    }
   }
   .learning .pill:focus-visible {
     outline: 3px solid var(--md-primary);
@@ -255,10 +245,6 @@ const contexts = [
   button.pill {
     cursor: help;
   }
-  .pill:active {
-    scale: 0.94;
-  }
-
   .star {
     margin-left: 0.1em;
     font-weight: 800;
@@ -299,13 +285,9 @@ const contexts = [
   }
 
   @media (hover: hover) {
-    /* Hovered blob bulges and tilts; its neighbours make room */
+    /* Hovered blob tilts */
     li:hover > .pill {
-      scale: 1.15;
       rotate: -4deg;
-    }
-    .blobs:has(li:hover) li:not(:hover) > .pill {
-      scale: 0.94;
     }
     .learning li:hover > .pill {
       background: var(--fg);
@@ -318,13 +300,9 @@ const contexts = [
     }
     /* Pointing at the footnote calls out the languages it's about */
     .speak:has(.footnote:hover) .legacy > .pill {
-      scale: 1.12;
       rotate: 3deg;
       background: var(--md-tertiary);
       color: var(--md-on-tertiary);
-    }
-    .speak:has(.footnote:hover) li:not(.legacy) > .pill {
-      scale: 0.94;
     }
   }
 
