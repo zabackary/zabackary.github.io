@@ -10,11 +10,11 @@ interface Props {
 }
 
 const { project } = Astro.props;
-const { name, description, glyph, tone, status, tags } = project.data;
+const { name, description, glyph, color, status, tags } = project.data;
 const names = projectTransitions(project.id);
 ---
 
-<Card href={`/projects/${project.id}`} {tone} transitionName={names.container}>
+<Card href={`/projects/${project.id}`} {color} transitionName={names.container}>
   <Blob transitionName={names.blob}>{glyph}</Blob>
   <h3>{name}</h3>
   <p>{description}</p>

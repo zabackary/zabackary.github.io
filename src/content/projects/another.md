@@ -3,7 +3,6 @@ name: Kaiwa
 description: A WebSocket-powered chat app and Discord mimic, built to replace Conversation for friends at school.
 status: incomplete
 tags: [website, node, websockets]
-tone: primary
 glyph: 💬
 ---
 

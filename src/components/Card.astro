@@ -1,23 +1,32 @@
 ---
+import { containerStyle } from "../theme";
 import type { Tone } from "../types";
 
 interface Props {
   tone?: Tone;
+  /** Hex colour for the card; overrides `tone`. */
+  color?: string;
   /** Makes the card a link. Otherwise it's a plain section. */
   href?: string;
   /** Shared view-transition name; pairs this card with an element of the same name on the next page. */
   transitionName?: string;
 }
 
-const { tone = "primary", href, transitionName } = Astro.props;
+const { tone = "primary", color, href, transitionName } = Astro.props;
 const Tag = href ? "a" : "section";
+const style = [
+  color && containerStyle(color),
+  transitionName && `view-transition-name: ${transitionName}; view-transition-class: shared`,
+]
+  .filter(Boolean)
+  .join(";");
 ---
 
 <Tag
   class="card"
-  data-tone={tone}
+  data-tone={color ? undefined : tone}
   href={href}
-  style={transitionName && `view-transition-name: ${transitionName}; view-transition-class: shared`}
+  style={style || undefined}
 >
   <slot />
 </Tag>

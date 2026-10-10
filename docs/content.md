@@ -1,6 +1,6 @@
 # Content
 
-> Summary: Projects are Markdown files in `src/content/projects/`, validated by the schema in `src/content.config.ts`. The file name becomes the URL (`/projects/<name>`). Copy is written by the owner; agents leave `TODO(copy)` placeholders.
+> Summary: Projects are Markdown files in `src/content/projects/`, validated by the schema in `src/content.config.ts`. The file name becomes the URL (`/projects/<name>`). Copy is written by the owner; agents leave `TODO(copy)` placeholders. An optional `color` hex colours a project's card and themes its detail page.
 
 Last updated: 2026-10-03
 
@@ -14,17 +14,21 @@ name: Kaiwa
 description: One sentence shown on the card and detail hero.
 status: incomplete        # finished | wip | incomplete (default: finished)
 tags: [website, node]
-tone: tertiary            # primary | secondary | tertiary (card/hero colour)
 glyph: 💬                 # one emoji shown in the blob until screenshots exist
+color: "#5865f2"          # optional hex; colours the card, themes the detail page (see below)
 link: https://example.com # optional; adds a "View project" button
 ---
 
 Markdown body shown on the detail page.
 ```
 
+### Project colour
+
+`color` is optional. When set, the detail page re-themes every `--md-*` token from it using `@material/material-color-utilities` (`src/theme.ts`): the colour is harmonized toward the site's purple, then a content scheme is generated for light and dark mode. Quote the value in YAML (`#` starts a comment). Without it the page uses the site theme. The same colour tints the project's card on the home grid (its container colour, light/dark aware). Without `color`, both use the site purple.
+
 `startDate` / `endDate` exist in the schema but aren't displayed yet.
 
-Vary `tone` between neighbouring projects so the grid doesn't read as one colour.
+Pick different colours for neighbouring projects so the grid doesn't read as one colour.
 
 ## Copy placeholders
 

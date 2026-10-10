@@ -1,0 +1,32 @@
+/* Cross-document view transitions. Global because the ::view-transition pseudo-elements can't be scoped.
+   Shared elements get a unique view-transition-name inline (see src/transitions.ts); the browser then
+   morphs position and size between pages. Skipped for reduced motion, and browsers without support
+   just navigate normally. */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition { navigation: auto; }
+
+  /* Rest of the page: quick fade out, new content fades in while rising a little */
+  ::view-transition-old(root) { animation: 0.15s var(--effects) both vt-fade-out; }
+  ::view-transition-new(root) { animation: 0.4s var(--effects) 0.05s both vt-rise-in; }
+
+  /* Container transform (card <-> hero) and shared blob: spring position/size, stretch the snapshots
+     to fill the group so they cross-fade rather than overflow */
+  ::view-transition-group(.shared) {
+    animation-duration: 0.6s;
+    animation-timing-function: var(--spring-slow);
+  }
+  ::view-transition-old(.shared),
+  ::view-transition-new(.shared) {
+    height: 100%;
+    object-fit: fill;
+  }
+
+  /* Nav stays put; the active pill slides between links */
+  ::view-transition-group(nav-active) {
+    animation-duration: 0.5s;
+    animation-timing-function: var(--spring-fast);
+  }
+}
+
+@keyframes vt-fade-out { to { opacity: 0; } }
+@keyframes vt-rise-in { from { opacity: 0; transform: translateY(1rem); } }

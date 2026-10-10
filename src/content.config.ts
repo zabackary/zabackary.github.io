@@ -11,10 +11,10 @@ const projects = defineCollection({
     startDate: z.string().optional(),
     endDate: z.string().optional(),
     tags: z.array(z.string()).default([]),
-    // M3 container role used to colour the card/hero
-    tone: z.enum(["primary", "secondary", "tertiary"]).default("primary"),
     // single emoji/glyph shown in the card's shape until screenshots exist
     glyph: z.string().default("✦"),
+    // optional brand colour (harmonized toward the site colour): colours the card and themes the detail page
+    color: z.string().regex(/^#[0-9a-fA-F]{6}$/, "use a 6-digit hex like #3b82f6").optional(),
     link: z.url().optional(),
   }),
 });

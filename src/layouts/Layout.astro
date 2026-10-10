@@ -5,9 +5,11 @@ import "../styles/transitions.css";
 
 interface Props {
   title?: string;
+  /** CSS from `themeCss()`, overriding the colour tokens for this page */
+  theme?: string;
 }
 
-const { title = "zabackary" } = Astro.props;
+const { title = "zabackary", theme } = Astro.props;
 ---
 
 <!doctype html>
@@ -24,6 +26,7 @@ const { title = "zabackary" } = Astro.props;
       rel="stylesheet"
     />
     <title>{title}</title>
+    {theme && <style set:html={theme} />}
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>

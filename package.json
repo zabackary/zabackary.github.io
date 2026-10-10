@@ -7,11 +7,13 @@
   },
   "scripts": {
     "dev": "astro dev",
+    "dev-host": "astro dev --host",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro"
   },
   "dependencies": {
+    "@material/material-color-utilities": "^0.4.0",
     "astro": "^7.3.5"
   },
   "allowScripts": {
