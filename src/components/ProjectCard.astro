@@ -3,6 +3,7 @@ import type { CollectionEntry } from "astro:content";
 import Blob from "./Blob.astro";
 import Card from "./Card.astro";
 import ChipList from "./ChipList.astro";
+import defaultThumbnail from "../assets/default-thumb.webp";
 import { projectTransitions } from "../transitions";
 
 interface Props {
@@ -12,7 +13,7 @@ interface Props {
 }
 
 const { project, compact } = Astro.props;
-const { name, description, glyph, color, status, tags } = project.data;
+const { name, description, glyph, color, status, tags, thumbnail } = project.data;
 const names = projectTransitions(project.id);
 ---
 
@@ -20,6 +21,7 @@ const names = projectTransitions(project.id);
   href={`/projects/${project.id}`}
   color={compact ? undefined : color}
   calm={compact}
+  thumbnail={thumbnail ?? defaultThumbnail}
   transitionName={names.container}
 >
   <Blob transitionName={names.blob}>{glyph}</Blob>

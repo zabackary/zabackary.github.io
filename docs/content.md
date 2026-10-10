@@ -1,6 +1,6 @@
 # Content
 
-> Summary: Projects are Markdown files in `src/content/projects/`, validated by the schema in `src/content.config.ts`. The file name becomes the URL (`/projects/<name>`). Copy is written by the owner; agents leave `TODO(copy)` placeholders. An optional `color` hex colours a project's card and themes its detail page.
+> Summary: Projects are Markdown files in `src/content/projects/`, validated by the schema in `src/content.config.ts`. The file name becomes the URL (`/projects/<name>`). Copy is written by the owner; agents leave `TODO(copy)` placeholders. An optional `color` hex colours a project's card and themes its detail page. Optional `thumbnail` image (relative path) shows on cards and as the detail-page backdrop; the default artwork is used when absent.
 
 Last updated: 2026-10-10
 
@@ -17,6 +17,7 @@ tags: [website, node]
 glyph: 💬                 # one emoji shown in the blob until screenshots exist
 color: "#5865f2"          # optional hex; colours the card, themes the detail page (see below)
 link: https://example.com # optional; adds a "View project" button
+thumbnail: ./kaiwa.webp   # optional; relative to this file. Default: src/assets/default-thumb.webp
 ---
 
 Markdown body shown on the detail page.
@@ -46,5 +47,5 @@ Many projects come from the earlier `../project_showcase/data/<name>/index.md` (
 
 ## Known gaps
 
-- Screenshots aren't supported yet (schema has no field; the card uses a glyph blob).
+- Real screenshots: `thumbnail` exists, but every project still uses the default artwork.
 - The example `kaiwa.md` copy and the About page text were written as placeholders and are not yet marked `TODO(copy)`.

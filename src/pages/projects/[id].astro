@@ -1,5 +1,7 @@
 ---
 import { getCollection, render } from "astro:content";
+import { Image } from "astro:assets";
+import defaultThumbnail from "../../assets/default-thumb.webp";
 import Blob from "../../components/Blob.astro";
 import Button from "../../components/Button.astro";
 import ChipList from "../../components/ChipList.astro";
@@ -17,21 +19,27 @@ export async function getStaticPaths() {
 }
 
 const { project } = Astro.props;
-const { name, description, status, tags, glyph, color, link } = project.data;
+const { name, description, status, tags, glyph, color, link, thumbnail } =
+  project.data;
 const { Content } = await render(project);
 const names = projectTransitions(project.id);
 ---
 
 <Layout title={`${name} — zabackary`} theme={color && themeCss(color)}>
-  <HeroCard transitionName={names.container}>
-    <p class="label">{status}</p>
-    <h1 class="display">{name}</h1>
-    <p class="description">{description}</p>
-    <ChipList items={tags} />
-    <Blob slot="aside" size="large" transitionName={names.blob}>
-      {glyph}
-    </Blob>
-  </HeroCard>
+  <div class="header">
+    <HeroCard transitionName={names.container}>
+      <p class="label">{status}</p>
+      <h1 class="display">{name}</h1>
+      <p class="description">{description}</p>
+      <ChipList items={tags} />
+      <Blob slot="aside" size="large" transitionName={names.blob}>
+        {glyph}
+      </Blob>
+    </HeroCard>
+    <div class="thumbnail">
+      <Image src={thumbnail ?? defaultThumbnail} alt="" width={1600} />
+    </div>
+  </div>
 
   <article class="prose">
     <Content />
@@ -70,6 +78,43 @@ const names = projectTransitions(project.id);
 </script>
 
 <style>
+  /* The thumbnail is a backdrop: it starts level with the nav (the main column begins ~6rem lower) and the
+     hero is pushed down so it covers the lower part of the image. It is wider than the hero (64rem) wherever the viewport allows. */
+  .header {
+    --thumb-width: min(100vw - 2rem, 72rem);
+    position: relative;
+    padding-top: max(0px, calc(var(--thumb-width) * 9 / 16 * 0.55 - 6rem));
+  }
+  .thumbnail {
+    position: absolute;
+    top: -5rem;
+    left: 50%;
+    translate: -50% 0;
+    z-index: -1;
+    pointer-events: none;
+    width: var(--thumb-width);
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border-radius: 2rem;
+    background: var(--md-surface-container-high);
+  }
+  .thumbnail :global(img) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+    /* Same treatment as the card thumbnails (see Card.astro) */
+    filter: invert(1);
+    mix-blend-mode: multiply;
+    opacity: 0.4;
+  }
+  @media (prefers-color-scheme: dark) {
+    .thumbnail :global(img) {
+      filter: none;
+      mix-blend-mode: screen;
+      opacity: 0.6;
+    }
+  }
   .display {
     font-size: clamp(2.5rem, 9vw, 5.5rem);
     font-weight: 800;

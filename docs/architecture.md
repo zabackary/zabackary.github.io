@@ -1,6 +1,6 @@
 # Architecture
 
-> Summary: Static Astro site. About is the home page (`/`, with a tiled view of the 3 most recent projects and an online-accounts section and a languages section whose items link to filtered project lists, e.g. `/projects?language=rust&tags=web`); all projects are at `/projects`. Pages in `src/pages`, one `projects` content collection in `src/content/projects`, small scoped-style components in `src/components`, tokens and type in one global stylesheet. Page transitions are native CSS view transitions (`styles/transitions.css`); the only client JS is the `Ripple` custom element, a small WebGL shader. No UI library; M3 Expressive is implemented by hand. `src/assets/default-thumb.svg` is the editable source of the default thumbnail artwork, re-rendered to WebP with the ImageMagick command below.
+> Summary: Static Astro site. About is the home page (`/`, with a tiled view of the 3 most recent projects and an online-accounts section and a languages section whose items link to filtered project lists, e.g. `/projects?language=rust&tags=web`); all projects are at `/projects`. Pages in `src/pages`, one `projects` content collection in `src/content/projects`, small scoped-style components in `src/components`, tokens and type in one global stylesheet. Page transitions are native CSS view transitions (`styles/transitions.css`); the only client JS is the `Ripple` custom element, a small WebGL shader. No UI library; M3 Expressive is implemented by hand. `src/assets/default-thumb.svg` is the editable source of the default thumbnail artwork, re-rendered to WebP with the ImageMagick command below. Images go through `astro:assets` (needs `sharp`). Project thumbnails default to `default-thumb.webp`.
 
 Last updated: 2026-10-10
 
@@ -18,7 +18,7 @@ src/
   pages/
     index.astro          About: hero, recent-projects view, accounts, bio, languages
     projects/index.astro project grid (all projects)
-    projects/[id].astro  project detail (renders the Markdown body)
+    projects/[id].astro  project detail (renders the Markdown body; the thumbnail is a rounded 16:9 backdrop, wider than the hero (up to 72rem), behind the nav, with the hero overlapping its lower part)
   components/            see below
   styles/global.css      tokens, base, type classes, tone roles, .grid, .prose
   theme.ts               seed colour; themeCss(hex): Material colour scheme as `--md-*` CSS; containerStyle
@@ -39,8 +39,8 @@ All have scoped `<style>`; they take colour from the surrounding tone, so they d
 | `Ripple` | Android-style sparkle press ripple: a `<ripple-effect>` custom element drawing a soft circle with twinkling dots in a WebGL fragment shader. First child of a `position: relative` button/link; clipped to its radius, uses its `color`. The WebGL context exists only while a ripple runs. Skipped under reduced motion or without WebGL (a console warning says why). Shader numbers (density, twinkle speed, opacity) are tuned by eye; they're in the fragment shader. |
 | `Chip`, `ChipList` | Small tag pills. `Chip` takes an optional `href` (then it's a link with a ripple, hover/press morph and a 44px touch target). `ChipList` takes `items`: strings, or `{ label, href }` for link chips. |
 | `Blob` | Morphing shape holding a glyph or image (clipped to the shape; the about page puts `src/assets/pfp.webp` in it). `size`: `small` / `large`. |
-| `Card` | Link (with `href`) or plain section. Only links animate on hover and ripple. `calm` uses `surface-container-high` and skips the corner morph. |
-| `ProjectCard` | A collection entry rendered as a `Card`. `compact` drops description and tags and uses the calm card instead of the project colour. |
+| `Card` | Link (with `href`) or plain section. Only links animate on hover and ripple. Optional `thumbnail` (image metadata) is faded in behind the content: along the top, or down the right side when `calm`. It is blended (multiply, inverted, in light; screen in dark) so the white-on-black artwork suits either scheme. `calm` uses `surface-container-high` and skips the corner morph. |
+| `ProjectCard` | A collection entry rendered as a `Card`, with its thumbnail (or the default). `compact` drops description and tags and uses the calm card instead of the project colour. |
 | `RecentProjectsView` | The 3 most recent projects, led by a vertical `label` slot and ending in a cookie `IconButton` to `/projects` (with a `Tooltip`, since a bare arrow is ambiguous). Desktop (>600px) tiles them: the newest as a roughly square full `ProjectCard` (content bottom-aligned) spanning two rows, the other two compact cards stacked beside it. Mobile is a horizontal scroll-snap row of compact cards (the newest is rendered twice, full and compact, and CSS shows one). Used on About, under the hero. |
 | `SectionHeader` | Big vertical `<h2>` label. `align`: `left` (reads bottom-to-top, sits before its content) / `right` (reads top-to-bottom, sits after it) / `center` (horizontal, above its section). Used by `RecentProjectsView`, `OnlineAccounts` and `Languages`. |
 | `OnlineAccounts` | About-page section: GitHub and Scratch `AccountCard`s with a right-aligned `SectionHeader`. Add an account by adding an `<li>` with an inline SVG logo. The Scratch logo is a placeholder cat head; swap for the official mark. |

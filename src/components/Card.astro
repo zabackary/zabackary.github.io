@@ -1,9 +1,12 @@
 ---
+import { Image } from "astro:assets";
 import { containerStyle } from "../theme";
 import type { Tone } from "../types";
 import Ripple from "./Ripple.astro";
 
 interface Props {
+  /** Artwork faded in behind the content: along the top, or down the right side when `calm`. */
+  thumbnail?: ImageMetadata;
   tone?: Tone;
   /** Hex colour for the card; overrides `tone`. */
   color?: string;
@@ -15,7 +18,7 @@ interface Props {
   calm?: boolean;
 }
 
-const { tone = "primary", color, href, transitionName, calm } = Astro.props;
+const { thumbnail, tone = "primary", color, href, transitionName, calm } = Astro.props;
 const Tag = href ? "a" : "section";
 const style = [
   color && containerStyle(color),
@@ -32,6 +35,13 @@ const style = [
   href={href}
   style={style || undefined}
 >
+  {
+    thumbnail && (
+      <div class="thumbnail">
+        <Image src={thumbnail} alt="" width={960} loading="lazy" />
+      </div>
+    )
+  }
   {href && <Ripple />}
   <slot />
 </Tag>
@@ -50,6 +60,44 @@ const style = [
     transition:
       background 0.2s var(--effects),
       border-radius 0.55s var(--spring-slow);
+  }
+  /* isolation keeps the thumbnail (z-index -1) above the card's background but below its content */
+  .card:has(.thumbnail) {
+    isolation: isolate;
+  }
+  .thumbnail {
+    position: absolute;
+    z-index: -1;
+    inset: 0 0 auto;
+    height: 65%;
+    border-radius: inherit;
+    overflow: hidden;
+    pointer-events: none;
+    mask-image: linear-gradient(to bottom, #000 20%, transparent);
+  }
+  .calm .thumbnail {
+    inset: 0 0 0 auto;
+    width: 65%;
+    height: auto;
+    mask-image: linear-gradient(to left, #000 20%, transparent);
+  }
+  .thumbnail :global(img) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* The artwork is white shapes on black. Light: flip it and multiply so shapes darken the card.
+       Dark: screen so shapes lighten it. Either way the black/white backdrop drops out. */
+    filter: invert(1);
+    mix-blend-mode: multiply;
+    opacity: 0.2;
+  }
+  @media (prefers-color-scheme: dark) {
+    .thumbnail :global(img) {
+      filter: none;
+      mix-blend-mode: screen;
+      opacity: 0.3;
+    }
   }
   /* Only links react to hover */
   @media (hover: hover) {
