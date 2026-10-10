@@ -1,6 +1,6 @@
 # Architecture
 
-> Summary: Static Astro site. About is the home page (`/`, with a tiled view of the 3 most recent projects and an online-accounts section and a languages section whose items link to filtered project lists, e.g. `/projects?language=rust&tags=web`); all projects are at `/projects`. Pages in `src/pages`, one `projects` content collection in `src/content/projects`, small scoped-style components in `src/components`, tokens and type in one global stylesheet. Page transitions are native CSS view transitions (`styles/transitions.css`); the only client JS is the `Ripple` custom element, a small WebGL shader. No UI library; M3 Expressive is implemented by hand.
+> Summary: Static Astro site. About is the home page (`/`, with a tiled view of the 3 most recent projects and an online-accounts section and a languages section whose items link to filtered project lists, e.g. `/projects?language=rust&tags=web`); all projects are at `/projects`. Pages in `src/pages`, one `projects` content collection in `src/content/projects`, small scoped-style components in `src/components`, tokens and type in one global stylesheet. Page transitions are native CSS view transitions (`styles/transitions.css`); the only client JS is the `Ripple` custom element, a small WebGL shader. No UI library; M3 Expressive is implemented by hand. `src/assets/default-thumb.svg` is the editable source of the default thumbnail artwork, re-rendered to WebP with the ImageMagick command below.
 
 Last updated: 2026-10-10
 
@@ -25,6 +25,7 @@ src/
   pages/theme.css.ts     static endpoint: /theme.css, the site's `--md-*` tokens built from the seed
   types.ts               shared types (Tone)
   transitions.ts         view-transition names pairing a project card with its hero
+  assets/default-thumb.*  grayscale shapes artwork (SVG source + rendered WebP), see "Regenerating assets"
 docs/                    you are here
 ```
 
@@ -59,6 +60,16 @@ All have scoped `<style>`; they take colour from the surrounding tone, so they d
 - **Global CSS is only** `transitions.css` (`::view-transition-*` pseudo-elements can't be scoped) and, in `global.css`, tokens, base element styles, type classes (`.display`, `.headline`, `.label`), tone roles, `.grid`, `.prose`. Everything else goes in the component or page that uses it.
 - Scoped styles don't reach slotted content. Style slotted children from the component that renders them.
 - Prefer a new small component over a new global class. Don't add one for a single use though.
+
+## Regenerating assets
+
+`src/assets/default-thumb.webp` is a 1920×1080 grayscale (white-on-near-black, so it suits any palette) artwork of Material shapes, rendered from `src/assets/default-thumb.svg`. Edit the SVG, then re-render from `src/assets/` with ImageMagick:
+
+```
+magick -density 96 -background black default-thumb.svg -resize 1920x1080 -colorspace Gray -attenuate 0.15 +noise Gaussian -quality 92 -define webp:method=6 default-thumb.webp
+```
+
+The SVG must not use filters (`<filter>`, blur, `mix-blend-mode`); ImageMagick's built-in renderer ignores them. The Gaussian noise is deliberate dithering that hides banding in the dark gradients. Lower `-attenuate` or `-quality` for a smaller file.
 
 ## Adding things
 
