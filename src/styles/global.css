@@ -50,7 +50,6 @@ html { scroll-padding-top: 5rem; } /* keep focused elements out from under the s
   margin: 0;
 }
 .headline { font-size: clamp(1.75rem, 4vw, 2.5rem); font-weight: 700; line-height: 1.15; margin: 0 0 0.5rem; }
-.label { font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
 
 /* Tone roles colour cards and heroes; components read --bg / --fg */
 [data-tone="primary"]   { --bg: var(--md-primary-container);   --fg: var(--md-on-primary-container); }

@@ -9,26 +9,31 @@ import Layout from "../layouts/Layout.astro";
 const projects = await getCollection("projects");
 ---
 
-<Layout title="zabackary — projects">
+<Layout title="zabackary's projects">
   <HeroCard tone="primary">
-    <p class="label">Portfolio</p>
-    <h1 class="display">Things I<br />have built.</h1>
-    <p class="intro">Small apps, games and experiments, some finished, plenty not.</p>
+    <h1 class="display">
+      Things I<br />
+      have built.
+    </h1>
+    <p class="intro">
+      Small apps, games and experiments, some finished, plenty not.
+    </p>
     <Button href="/about">About me</Button>
-    <Blob slot="aside" size="large">✦</Blob>
+    <Blob slot="aside" size="large">
+      ✦
+    </Blob>
   </HeroCard>
 
   <h2 class="headline">Projects</h2>
   <div class="grid">
-    {projects.map((project) => <ProjectCard {project} />)}
+    {projects.map((project) => (
+      <ProjectCard {project} />
+    ))}
   </div>
 </Layout>
 
 <style>
   .intro {
     max-width: 30rem;
-  }
-  .headline {
-    margin-top: 3rem;
   }
 </style>
