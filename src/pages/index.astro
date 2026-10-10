@@ -1,7 +1,6 @@
 ---
 import { getCollection } from "astro:content";
 import Blob from "../components/Blob.astro";
-import Button from "../components/Button.astro";
 import Card from "../components/Card.astro";
 import HeroCard from "../components/HeroCard.astro";
 import ProjectCarousel from "../components/ProjectCarousel.astro";
@@ -25,6 +24,9 @@ const recent = (await getCollection("projects"))
     </Blob>
   </HeroCard>
 
+  <h2 class="headline">Recent projects</h2>
+  <ProjectCarousel projects={recent} />
+
   <div class="grid">
     <Card tone="secondary">
       <h2 class="headline">What I do</h2>
@@ -40,19 +42,10 @@ const recent = (await getCollection("projects"))
       </p>
     </Card>
   </div>
-
-  <h2 class="headline">Recent projects</h2>
-  <ProjectCarousel projects={recent} />
-  <div class="more">
-    <Button href="/projects" variant="tonal">More projects</Button>
-  </div>
 </Layout>
 
 <style>
   .grid {
-    margin-top: 1rem;
-  }
-  .more {
     margin-top: 1rem;
   }
 </style>

@@ -11,9 +11,11 @@ interface Props {
   href?: string;
   /** Shared view-transition name; pairs this card with an element of the same name on the next page. */
   transitionName?: string;
+  /** Morphs all corners evenly instead of the asymmetric shape. */
+  calm?: boolean;
 }
 
-const { tone = "primary", color, href, transitionName } = Astro.props;
+const { tone = "primary", color, href, transitionName, calm } = Astro.props;
 const Tag = href ? "a" : "section";
 const style = [
   color && containerStyle(color),
@@ -24,7 +26,7 @@ const style = [
 ---
 
 <Tag
-  class="card"
+  class:list={["card", { calm }]}
   data-tone={color ? undefined : tone}
   href={href}
   style={style || undefined}
@@ -63,5 +65,15 @@ const style = [
   a.card:active {
     border-radius: 3.5rem 0.75rem 3.5rem 0.75rem;
     transform: scale(0.98);
+  }
+  /* Calm cards keep the corners even: they just tighten on hover, focus and press */
+  @media (hover: hover) {
+    a.card.calm:hover {
+      border-radius: 1.25rem;
+    }
+  }
+  a.card.calm:focus-visible,
+  a.card.calm:active {
+    border-radius: 1.25rem;
   }
 </style>

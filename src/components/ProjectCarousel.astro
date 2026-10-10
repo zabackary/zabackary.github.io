@@ -1,5 +1,6 @@
 ---
 import type { CollectionEntry } from "astro:content";
+import Button from "./Button.astro";
 import ProjectCard from "./ProjectCard.astro";
 
 interface Props {
@@ -12,9 +13,12 @@ const { projects } = Astro.props;
 <ul>
   {projects.map((project) => (
     <li>
-      <ProjectCard {project} />
+      <ProjectCard {project} compact />
     </li>
   ))}
+  <li class="more">
+    <Button href="/projects">More projects →</Button>
+  </li>
 </ul>
 
 <style>
@@ -33,10 +37,15 @@ const { projects } = Astro.props;
   }
   li {
     display: grid;
-    flex: 0 0 min(22rem, 80%);
+    flex: 0 0 min(13rem, 60%);
     scroll-snap-align: start;
   }
   /* Items shrink as they leave the visible edge, like an M3 carousel */
+  .more {
+    flex: 0 0 auto;
+    align-content: center;
+    padding-inline: 0.5rem 1rem;
+  }
   @supports (animation-timeline: view()) {
     li {
       animation: shrink linear both;

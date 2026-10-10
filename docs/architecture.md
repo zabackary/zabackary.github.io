@@ -38,9 +38,9 @@ All have scoped `<style>`; they take colour from the surrounding tone, so they d
 | `Ripple` | Android-style sparkle press ripple: a `<ripple-effect>` custom element drawing a soft circle with twinkling dots in a WebGL fragment shader. First child of a `position: relative` button/link; clipped to its radius, uses its `color`. The WebGL context exists only while a ripple runs. Skipped under reduced motion or without WebGL (a console warning says why). Shader numbers (density, twinkle speed, opacity) are tuned by eye; they're in the fragment shader. |
 | `Chip`, `ChipList` | Small tag pills; `ChipList` takes `items: string[]`. |
 | `Blob` | Morphing shape holding a glyph. `size`: `small` / `large`. |
-| `Card` | Link (with `href`) or plain section. Only links animate on hover and ripple. |
-| `ProjectCard` | A collection entry rendered as a `Card`. |
-| `ProjectCarousel` | Horizontal scroll-snap row of `ProjectCard`s, items shrink toward the edges (scroll-driven animation, where supported). Used on About. |
+| `Card` | Link (with `href`) or plain section. Only links animate on hover and ripple. `calm` swaps the asymmetric corner morph for an even one. |
+| `ProjectCard` | A collection entry rendered as a `Card`. `compact` drops description and tags and uses the primary tone instead of the project colour. |
+| `ProjectCarousel` | Horizontal scroll-snap row of compact `ProjectCard`s (glyph + name, primary tone) ending in a "More projects" button; items shrink toward the edges (scroll-driven animation, where supported). Used on About, under the hero. |
 | `HeroCard` | Big page header; default slot + named `aside` slot. |
 | `NavBar` | Sticky pill nav; marks the current page with `aria-current`. |
 

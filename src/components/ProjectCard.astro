@@ -7,18 +7,25 @@ import { projectTransitions } from "../transitions";
 
 interface Props {
   project: CollectionEntry<"projects">;
+  /** Just the glyph and name, in the calmer primary tone. */
+  compact?: boolean;
 }
 
-const { project } = Astro.props;
+const { project, compact } = Astro.props;
 const { name, description, glyph, color, status, tags } = project.data;
 const names = projectTransitions(project.id);
 ---
 
-<Card href={`/projects/${project.id}`} {color} transitionName={names.container}>
+<Card
+  href={`/projects/${project.id}`}
+  color={compact ? undefined : color}
+  calm={compact}
+  transitionName={names.container}
+>
   <Blob transitionName={names.blob}>{glyph}</Blob>
   <h3>{name}</h3>
-  <p>{description}</p>
-  <ChipList items={[status, ...tags]} />
+  {!compact && <p>{description}</p>}
+  {!compact && <ChipList items={[status, ...tags]} />}
 </Card>
 
 <style>
