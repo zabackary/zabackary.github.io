@@ -1,7 +1,7 @@
 ---
 interface Props {
-  /** Which side of its section the header sits on. */
-  align?: "left" | "right";
+  /** Which side of its section the header sits on. `center` is horizontal, above the section. */
+  align?: "left" | "right" | "center";
 }
 
 const { align = "left" } = Astro.props;
@@ -39,5 +39,12 @@ const { align = "left" } = Astro.props;
   .right {
     padding-inline: 1rem 0.5rem;
     margin-left: 0.5rem;
+  }
+  .center {
+    writing-mode: horizontal-tb;
+    padding-inline: 0;
+    margin-bottom: 1rem;
+    line-height: 1;
+    text-underline-offset: 0.1em;
   }
 </style>
