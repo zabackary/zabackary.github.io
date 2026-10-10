@@ -37,7 +37,7 @@ All have scoped `<style>`; they take colour from the surrounding tone, so they d
 | `Button` | `<a>` if `href`, else `<button>`. `variant`: `filled` / `tonal`. Has a `Ripple`. |
 | `Ripple` | Android-style sparkle press ripple: a `<ripple-effect>` custom element drawing a soft circle with twinkling dots in a WebGL fragment shader. First child of a `position: relative` button/link; clipped to its radius, uses its `color`. The WebGL context exists only while a ripple runs. Skipped under reduced motion or without WebGL (a console warning says why). Shader numbers (density, twinkle speed, opacity) are tuned by eye; they're in the fragment shader. |
 | `Chip`, `ChipList` | Small tag pills. `Chip` takes an optional `href` (then it's a link with a ripple, hover/press morph and a 44px touch target). `ChipList` takes `items`: strings, or `{ label, href }` for link chips. |
-| `Blob` | Morphing shape holding a glyph. `size`: `small` / `large`. |
+| `Blob` | Morphing shape holding a glyph or image (clipped to the shape; the about page puts `src/assets/pfp.webp` in it). `size`: `small` / `large`. |
 | `Card` | Link (with `href`) or plain section. Only links animate on hover and ripple. `calm` uses `surface-container-high` and skips the corner morph. |
 | `ProjectCard` | A collection entry rendered as a `Card`. `compact` drops description and tags and uses the calm card instead of the project colour. |
 | `ProjectCarousel` | Horizontal scroll-snap row of equal-size compact `ProjectCard`s, led by a vertical `label` slot ending in a cookie `IconButton` to `/projects`. Used on About, under the hero. |

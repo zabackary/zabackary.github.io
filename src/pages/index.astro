@@ -1,5 +1,6 @@
 ---
 import { getCollection } from "astro:content";
+import pfp from "../assets/pfp.webp";
 import Blob from "../components/Blob.astro";
 import Card from "../components/Card.astro";
 import HeroCard from "../components/HeroCard.astro";
@@ -27,7 +28,7 @@ const recent = (await getCollection("projects"))
       zabackary.
     </h1>
     <Blob slot="aside" size="large">
-      👋
+      <img src={pfp.src} alt="" width="288" height="288" />
     </Blob>
   </HeroCard>
 
