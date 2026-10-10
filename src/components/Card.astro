@@ -59,7 +59,9 @@ const style = [
   a.card:focus-visible {
     border-radius: 3.5rem 0.75rem 3.5rem 0.75rem;
   }
+  /* Touch has no hover, so pressing is where the morph happens */
   a.card:active {
+    border-radius: 3.5rem 0.75rem 3.5rem 0.75rem;
     transform: scale(0.98);
   }
 </style>
