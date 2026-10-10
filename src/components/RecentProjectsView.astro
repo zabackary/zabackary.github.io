@@ -1,0 +1,105 @@
+---
+import type { CollectionEntry } from "astro:content";
+import IconButton from "./IconButton.astro";
+import ProjectCard from "./ProjectCard.astro";
+import SectionHeader from "./SectionHeader.astro";
+import Tooltip from "./Tooltip.astro";
+
+interface Props {
+  projects: CollectionEntry<"projects">[];
+}
+
+const { projects } = Astro.props;
+const [first, ...rest] = projects;
+---
+
+<ul>
+  <li class="label">
+    <SectionHeader align="left"><slot name="label" /></SectionHeader>
+  </li>
+  {/* Desktop tiles the newest project big; mobile scrolls compact cards. Only one of the two is ever displayed. */}
+  {first && (
+    <li class="featured">
+      <ProjectCard project={first} />
+    </li>
+  )}
+  {first && (
+    <li class="compact-first">
+      <ProjectCard project={first} compact />
+    </li>
+  )}
+  {rest.map((project) => (
+    <li>
+      <ProjectCard {project} compact />
+    </li>
+  ))}
+  <li class="more">
+    <div class="more-button">
+      <IconButton href="/projects" label="More projects" />
+      <Tooltip id="more-projects-tip">More projects</Tooltip>
+    </div>
+  </li>
+</ul>
+
+<style>
+  ul {
+    display: flex;
+    gap: 0.5rem;
+    margin: 0;
+    margin-inline: -0.5rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: 0.5rem;
+    list-style: none;
+    scrollbar-width: none;
+  }
+  li {
+    display: grid;
+    flex: 0 0 11rem;
+    scroll-snap-align: start;
+  }
+  .label {
+    flex: 0 0 auto;
+  }
+  .more {
+    flex: 0 0 auto;
+    align-content: center;
+    padding-inline: 0.5rem 1rem;
+  }
+  .more-button {
+    position: relative;
+  }
+  .featured {
+    display: none;
+  }
+
+  /* A is roughly square and spans both rows; B and C stack beside it */
+  @media (min-width: 601px) {
+    ul {
+      display: grid;
+      grid-template-columns: auto 1fr 1fr auto;
+      overflow: visible;
+    }
+    .label {
+      grid-area: 1 / 1 / 3 / 2;
+    }
+    .featured {
+      display: grid;
+      grid-area: 1 / 2 / 3 / 3;
+      aspect-ratio: 1;
+    }
+    .compact-first ~ li:not(.more) {
+      grid-column: 3;
+    }
+    .more {
+      grid-area: 1 / 4 / 3 / 5;
+    }
+    /* Extra height from the square shape goes above the content, not into the chips */
+    .featured :global(.card) {
+      align-content: end;
+    }
+    .compact-first {
+      display: none;
+    }
+  }
+</style>

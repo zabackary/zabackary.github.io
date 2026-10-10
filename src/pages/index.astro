@@ -4,7 +4,7 @@ import pfp from "../assets/pfp.webp";
 import Blob from "../components/Blob.astro";
 import Card from "../components/Card.astro";
 import HeroCard from "../components/HeroCard.astro";
-import ProjectCarousel from "../components/ProjectCarousel.astro";
+import RecentProjectsView from "../components/RecentProjectsView.astro";
 import Tooltip from "../components/Tooltip.astro";
 import Layout from "../layouts/Layout.astro";
 import Divider from "../components/Divider.astro";
@@ -44,13 +44,13 @@ const recent = (await getCollection("projects"))
 
   <Divider />
 
-  <ProjectCarousel projects={recent}>
+  <RecentProjectsView projects={recent}>
     <Fragment slot="label">
       Recent
       <br />
       projects
     </Fragment>
-  </ProjectCarousel>
+  </RecentProjectsView>
 
   <Divider />
 
