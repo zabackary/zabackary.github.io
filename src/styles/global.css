@@ -21,6 +21,9 @@ main:focus { outline: none; } /* only focused by the skip link */
 a { color: var(--md-primary); }
 html { scroll-padding-top: 5rem; } /* keep focused elements out from under the sticky nav */
 
+/* Solid primary, not a container colour: containers are the card backgrounds, so they'd vanish there */
+::selection { background: var(--md-primary); color: var(--md-on-primary); }
+
 /* One focus ring for everything; outlines follow border-radius, so it tracks morphing shapes.
    Pops in (0 -> 8px -> 3px) like the M3 Expressive ring. */
 :focus-visible {
