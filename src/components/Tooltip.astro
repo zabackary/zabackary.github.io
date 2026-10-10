@@ -1,0 +1,52 @@
+---
+interface Props {
+  id: string;
+}
+
+const { id } = Astro.props;
+---
+
+<!-- Put it after a focusable element, inside a `position: relative` parent. The element's `aria-describedby` points at `id`. -->
+<span class="tip" role="tooltip" {id}>
+  <slot />
+</span>
+
+<style>
+  /* Inverted surface, springs in above the parent. Shown on focus too, which is how touch gets it */
+  .tip {
+    position: absolute;
+    left: 50%;
+    bottom: calc(100% + 0.5rem);
+    z-index: 2;
+    width: max-content;
+    max-width: min(14rem, 70vw);
+    padding: 0.5rem 0.875rem;
+    border-radius: 1rem;
+    background: var(--md-on-surface);
+    color: var(--md-surface);
+    font-size: 0.875rem;
+    line-height: 1.35;
+    text-align: center;
+    pointer-events: none;
+    opacity: 0;
+    translate: -50% 0.5rem;
+    scale: 0.8;
+    transition:
+      opacity 0.2s var(--effects),
+      translate 0.45s var(--spring-fast),
+      scale 0.45s var(--spring-fast);
+  }
+  :global(:focus) ~ .tip {
+    opacity: 1;
+    translate: -50% 0;
+    scale: 1;
+  }
+
+  @media (hover: hover) {
+    :global(:hover) > .tip {
+      opacity: 1;
+      translate: -50% 0;
+      scale: 1;
+    }
+  }
+</style>

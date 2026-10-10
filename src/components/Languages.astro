@@ -4,6 +4,7 @@ import Card from "./Card.astro";
 import ChipList from "./ChipList.astro";
 import Ripple from "./Ripple.astro";
 import SectionHeader from "./SectionHeader.astro";
+import Tooltip from "./Tooltip.astro";
 
 interface Language {
   name: string;
@@ -87,9 +88,7 @@ const contexts = [
                 {language.legacy && <span class="star">*</span>}
               </Pill>
               {language.tip && (
-                <span class="tip" role="tooltip" id={`tip-${i}`}>
-                  {language.tip}
-                </span>
+                <Tooltip id={`tip-${i}`}>{language.tip}</Tooltip>
               )}
             </li>
           );
@@ -120,9 +119,7 @@ const contexts = [
                 {language.name}
               </Pill>
               {language.tip && (
-                <span class="tip" role="tooltip" id={`learning-tip-${i}`}>
-                  {language.tip}
-                </span>
+                <Tooltip id={`learning-tip-${i}`}>{language.tip}</Tooltip>
               )}
             </li>
           );
@@ -254,36 +251,6 @@ const contexts = [
     font-size: 0.875rem;
   }
 
-  /* Tooltips: inverted surface, spring in above the blob. Shown on focus too, which is how touch gets them */
-  .tip {
-    position: absolute;
-    left: 50%;
-    bottom: calc(100% + 0.5rem);
-    z-index: 2;
-    width: max-content;
-    max-width: min(14rem, 70vw);
-    padding: 0.5rem 0.875rem;
-    border-radius: 1rem;
-    background: var(--md-on-surface);
-    color: var(--md-surface);
-    font-size: 0.875rem;
-    line-height: 1.35;
-    text-align: center;
-    pointer-events: none;
-    opacity: 0;
-    translate: -50% 0.5rem;
-    scale: 0.8;
-    transition:
-      opacity 0.2s var(--effects),
-      translate 0.45s var(--spring-fast),
-      scale 0.45s var(--spring-fast);
-  }
-  .pill:focus ~ .tip {
-    opacity: 1;
-    translate: -50% 0;
-    scale: 1;
-  }
-
   @media (hover: hover) {
     /* Hovered blob tilts */
     li:hover > .pill {
@@ -292,11 +259,6 @@ const contexts = [
     .learning li:hover > .pill {
       background: var(--fg);
       color: var(--bg);
-    }
-    li:hover > .tip {
-      opacity: 1;
-      translate: -50% 0;
-      scale: 1;
     }
     /* Pointing at the footnote calls out the languages it's about */
     .speak:has(.footnote:hover) .legacy > .pill {

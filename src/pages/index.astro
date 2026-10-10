@@ -5,6 +5,7 @@ import Blob from "../components/Blob.astro";
 import Card from "../components/Card.astro";
 import HeroCard from "../components/HeroCard.astro";
 import ProjectCarousel from "../components/ProjectCarousel.astro";
+import Tooltip from "../components/Tooltip.astro";
 import Layout from "../layouts/Layout.astro";
 import Divider from "../components/Divider.astro";
 import OnlineAccounts from "../components/OnlineAccounts.astro";
@@ -27,9 +28,14 @@ const recent = (await getCollection("projects"))
       <br />
       zabackary.
     </h1>
-    <Blob slot="aside" size="large">
-      <img src={pfp.src} alt="" width="288" height="288" />
-    </Blob>
+    <div slot="aside" class="pfp">
+      <button type="button" aria-label="Profile picture" aria-describedby="pfp-tip">
+        <Blob size="large">
+          <img src={pfp.src} alt="" width="288" height="288" />
+        </Blob>
+      </button>
+      <Tooltip id="pfp-tip">Yes, this is really my profile picture.</Tooltip>
+    </div>
   </HeroCard>
 
   <h2 class="tagline">
@@ -69,6 +75,18 @@ const recent = (await getCollection("projects"))
 </Layout>
 
 <style>
+  .pfp {
+    position: relative;
+  }
+  .pfp button {
+    display: block;
+    padding: 0;
+    border: 0;
+    background: none;
+    border-radius: 50%;
+    cursor: help;
+    -webkit-tap-highlight-color: transparent;
+  }
   .grid {
     margin-top: 1rem;
   }
