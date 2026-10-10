@@ -2,7 +2,7 @@
 
 > Summary: Projects are Markdown files in `src/content/projects/`, validated by the schema in `src/content.config.ts`. The file name becomes the URL (`/projects/<name>`). Copy is written by the owner; agents leave `TODO(copy)` placeholders. An optional `color` hex colours a project's card and themes its detail page.
 
-Last updated: 2026-10-03
+Last updated: 2026-10-10
 
 ## Adding a project
 
@@ -24,7 +24,7 @@ Markdown body shown on the detail page.
 
 ### Project colour
 
-`color` is optional. When set, the detail page re-themes every `--md-*` token from it using `@material/material-color-utilities` (`src/theme.ts`): the colour is harmonized toward the site's purple, then a content scheme is generated for light and dark mode. Quote the value in YAML (`#` starts a comment). Without it the page uses the site theme. The same colour tints the project's card on the home grid (its container colour, light/dark aware). Without `color`, both use the site purple.
+`color` is optional. When set, the detail page re-themes every `--md-*` token from it using `@material/material-color-utilities` (`src/theme.ts`): the colour is harmonized toward the site's seed colour, then a content scheme is generated for light and dark mode. Quote the value in YAML (`#` starts a comment). Without it the page uses the site theme. The same colour tints the project's card on the home grid (its container colour, light/dark aware). Without `color`, both use the site seed colour.
 
 `startDate` / `endDate` exist in the schema but aren't displayed yet.
 

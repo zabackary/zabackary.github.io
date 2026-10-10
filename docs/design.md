@@ -2,7 +2,7 @@
 
 > Summary: Feel is the top priority. Expressive = big rounded shapes that morph, springy overshoot motion, heavy wide display type, tonal colour containers. Every interactive element must handle hover (gated to `(hover: hover)`), focus-visible (one global ring in `global.css` that pops in 0 → 8px → 3px, after the M3E ButtonBase ring), active, keyboard and touch. Skip link and 44px tap targets are in place. Page navigation uses native cross-document view transitions (card ↔ hero container transform, shared blob, sliding nav pill, fade/rise for the rest; off under reduced motion). Remaining gaps: font hosting, theme toggle, real screenshots.
 
-Last updated: 2026-10-03
+Last updated: 2026-10-10
 
 ## Intent
 
