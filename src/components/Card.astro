@@ -11,7 +11,7 @@ interface Props {
   href?: string;
   /** Shared view-transition name; pairs this card with an element of the same name on the next page. */
   transitionName?: string;
-  /** Morphs all corners evenly instead of the asymmetric shape. */
+  /** Neutral surface colour, and no corner morph (hover tints, press scales; nothing translates). */
   calm?: boolean;
 }
 
@@ -19,7 +19,8 @@ const { tone = "primary", color, href, transitionName, calm } = Astro.props;
 const Tag = href ? "a" : "section";
 const style = [
   color && containerStyle(color),
-  transitionName && `view-transition-name: ${transitionName}; view-transition-class: shared`,
+  transitionName &&
+    `view-transition-name: ${transitionName}; view-transition-class: shared`,
 ]
   .filter(Boolean)
   .join(";");
@@ -47,33 +48,38 @@ const style = [
     text-decoration: none;
     -webkit-tap-highlight-color: transparent;
     transition:
+      background 0.2s var(--effects),
       border-radius 0.55s var(--spring-slow),
-      transform 0.55s var(--spring-slow);
+      translate 0.55s var(--spring-slow),
+      scale 0.55s var(--spring-slow);
   }
   /* Only links react to hover */
   @media (hover: hover) {
-    a.card:hover {
+    a.card:not(.calm):hover {
+      translate: 0 -4px;
       border-radius: 3.5rem 0.75rem 3.5rem 0.75rem;
-      transform: translateY(-4px);
     }
   }
   /* Keyboard focus gets the same shape morph as hover */
-  a.card:focus-visible {
+  a.card:not(.calm):focus-visible {
     border-radius: 3.5rem 0.75rem 3.5rem 0.75rem;
   }
   /* Touch has no hover, so pressing is where the morph happens */
   a.card:active {
+    scale: 0.98;
+  }
+  a.card:not(.calm):active {
     border-radius: 3.5rem 0.75rem 3.5rem 0.75rem;
-    transform: scale(0.98);
   }
-  /* Calm cards keep the corners even: they just tighten on hover, focus and press */
+
+  /* Calm cards keep their shape and sit on a neutral surface */
+  .calm {
+    --bg: var(--md-surface-container-high);
+    --fg: var(--md-on-surface);
+  }
   @media (hover: hover) {
-    a.card.calm:hover {
-      border-radius: 1.25rem;
+    a.calm:hover {
+      background: color-mix(in srgb, var(--md-on-surface) 8%, var(--bg));
     }
-  }
-  a.card.calm:focus-visible,
-  a.card.calm:active {
-    border-radius: 1.25rem;
   }
 </style>
