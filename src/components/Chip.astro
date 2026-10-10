@@ -1,13 +1,66 @@
-<span class="chip"><slot /></span>
+---
+import Ripple from "./Ripple.astro";
+
+interface Props {
+  /** Makes the chip a link. */
+  href?: string;
+}
+
+const { href } = Astro.props;
+const Tag = href ? "a" : "span";
+---
+
+<Tag class="chip" {href}>
+  {href && <Ripple />}
+  <slot />
+</Tag>
 
 <style>
   /* Tints itself from the surrounding tone's --fg */
   .chip {
+    position: relative;
+    overflow: hidden;
     display: inline-block;
     padding: 0.2rem 0.75rem;
     border-radius: 0.5rem;
-    background: color-mix(in srgb, var(--fg, var(--md-on-surface)) 12%, transparent);
+    background: color-mix(
+      in srgb,
+      var(--fg, var(--md-on-surface)) 12%,
+      transparent
+    );
+    color: inherit;
     font-size: 0.875rem;
     font-weight: 500;
+    text-decoration: none;
+    -webkit-tap-highlight-color: transparent;
+    transition:
+      background 0.2s var(--effects),
+      border-radius 0.45s var(--spring-fast),
+      scale 0.45s var(--spring-fast);
+  }
+  a.chip:focus-visible {
+    border-radius: 0.9rem;
+  }
+  a.chip:active {
+    scale: 0.94;
+    border-radius: 0.9rem;
+  }
+  @media (hover: hover) {
+    a.chip:hover {
+      background: color-mix(
+        in srgb,
+        var(--fg, var(--md-on-surface)) 24%,
+        transparent
+      );
+      border-radius: 0.9rem;
+    }
+  }
+  /* Finger-sized tap target for link chips */
+  @media (pointer: coarse) {
+    a.chip {
+      display: inline-flex;
+      align-items: center;
+      min-height: 2.75rem;
+    }
   }
 </style>

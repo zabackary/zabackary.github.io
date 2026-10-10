@@ -10,6 +10,8 @@
     inset: 0;
     border-radius: inherit;
     overflow: hidden;
+    /* Keeps the rounded clip working on the composited canvas while the parent scales and morphs */
+    isolation: isolate;
     pointer-events: none;
   }
   /* The canvas is added by the script below, so it isn't scoped */

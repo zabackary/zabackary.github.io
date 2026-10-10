@@ -2,14 +2,21 @@
 import Chip from "./Chip.astro";
 
 interface Props {
-  items: string[];
+  /** Plain strings, or `{ label, href }` for chips that link somewhere. */
+  items: (string | { label: string; href: string })[];
 }
 
 const { items } = Astro.props;
 ---
 
 <div class="chips">
-  {items.map((item) => <Chip>{item}</Chip>)}
+  {items.map((item) =>
+    typeof item === "string" ? (
+      <Chip>{item}</Chip>
+    ) : (
+      <Chip href={item.href}>{item.label}</Chip>
+    ),
+  )}
 </div>
 
 <style>
