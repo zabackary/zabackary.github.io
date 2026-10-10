@@ -7,6 +7,7 @@ import ProjectCarousel from "../components/ProjectCarousel.astro";
 import Layout from "../layouts/Layout.astro";
 import Divider from "../components/Divider.astro";
 import OnlineAccounts from "../components/OnlineAccounts.astro";
+import Languages from "../components/Languages.astro";
 
 // Newest first; undated projects go last
 const recent = (await getCollection("projects"))
@@ -54,17 +55,16 @@ const recent = (await getCollection("projects"))
     <Card tone="secondary">
       <h2 class="headline">What I do</h2>
       <p>
-        I make web apps, games and tools, mostly to scratch my own itch.
-        Placeholder copy; swap in your own.
-      </p>
-    </Card>
-    <Card tone="primary">
-      <h2 class="headline">Elsewhere</h2>
-      <p>
-        <a href="https://github.com/zabackary">GitHub</a>
+        I work on embedded systems, web apps, and normal native apps across a
+        variety of programming languages and platforms, sometimes working for
+        myself but usually in the service of others.
       </p>
     </Card>
   </div>
+
+  <Divider />
+
+  <Languages />
 </Layout>
 
 <style>

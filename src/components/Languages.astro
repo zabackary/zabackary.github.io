@@ -1,0 +1,425 @@
+---
+import Blob from "./Blob.astro";
+import Card from "./Card.astro";
+import ChipList from "./ChipList.astro";
+import Ripple from "./Ripple.astro";
+import SectionHeader from "./SectionHeader.astro";
+
+interface Language {
+  name: string;
+  /** Language code, for names that aren't English. */
+  lang?: string;
+  /** "I've worked in legacy codebases using this". Shows the footnote star. */
+  legacy?: boolean;
+  /** Tooltip text. Languages with one become focusable buttons (unless they link). */
+  tip?: string;
+  /** Projects filtered to this language. Spoken languages have none. */
+  href?: string;
+}
+
+// Links win over tooltip buttons; both fall back to plain text
+const pillTag = ({ href, tip }: Language) => (href ? "a" : tip ? "button" : "span");
+const byLanguage =(language: string) => `/projects?language=${language}`;
+const byTags = (tags: string) => `/projects?tags=${tags}`;
+
+// TODO(copy): tooltip text (`tip`) for any language that should have one
+const speak: Language[] = [
+  { name: "Rust", href: byLanguage("rust"), tip: "Many projects, native and embedded" },
+  { name: "TypeScript", href: byLanguage("typescript"), tip: "Often with React, usually web" },
+  { name: "Python 3", href: byLanguage("python"), tip: "For quick and dirty scripts" },
+  { name: "JavaScript", href: byLanguage("javascript"), tip: "For web, NodeJS, and more recently Deno" },
+  { name: "Kotlin", href: byLanguage("kotlin"), tip: "Kotlin DX is the best!" },
+  { name: "HTML/CSS/JS", href: byLanguage("web"), tip: "The unavoidable" },
+  { name: "PHP", href: byLanguage("php"), legacy: true, tip: "Internship work on legacy systems" },
+  { name: "Java", href: byLanguage("java"), legacy: true, tip: "Reading Android apps" },
+  { name: "English", tip: "My native language!" },
+];
+
+const learning: Language[] = [
+  { name: "C++", href: byLanguage("cpp"), tip: "For embedded; VEX and PROS" },
+  { name: "日本語", lang: "ja", tip: "Japanese - working on JLPT N2/N3!" },
+];
+
+// Each context is one link to its tag. Embedded is the exception: its types
+// are different enough that each gets its own link, so the card itself isn't one.
+const contexts = [
+  {
+    glyph: "🌐",
+    title: "Web dev",
+    href: byTags("web"),
+    items: ["React", "Svelte", "Lit", "Vanilla"],
+  },
+  { glyph: "🖥️", title: "Native applications", href: byTags("native") },
+  { glyph: "⌨️", title: "CLIs", href: byTags("cli") },
+  { glyph: "🤖", title: "Android apps", href: byTags("android") },
+  {
+    glyph: "🔌",
+    title: "Embedded",
+    href: byTags("embedded"),
+    splitItems: true,
+    items: [
+      { label: "Arduino", href: byTags("arduino") },
+      { label: "Embedded Linux", href: byTags("embedded-linux") },
+      { label: "VEX V5", href: byTags("vex-v5") },
+    ],
+  },
+];
+---
+
+<SectionHeader align="center">My languages</SectionHeader>
+<section class="languages">
+  <div class="table">
+    <div class="column speak" data-tone="secondary">
+      <h3>I speak...</h3>
+      <ul class="blobs">
+        {speak.map((language, i) => {
+          const Pill = pillTag(language);
+          return (
+            <li class:list={{ legacy: language.legacy }} style={`--i: ${i}`}>
+              <Pill
+                class="pill"
+                href={language.href}
+                type={Pill === "button" ? "button" : undefined}
+                aria-describedby={language.tip && `tip-${i}`}
+              >
+                {Pill !== "span" && <Ripple />}
+                {language.name}
+                {language.legacy && <span class="star">*</span>}
+              </Pill>
+              {language.tip && (
+                <span class="tip" role="tooltip" id={`tip-${i}`}>
+                  {language.tip}
+                </span>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+      <p class="footnote">
+        <span class="star" aria-hidden="true">
+          *
+        </span>
+        <i>I've worked in legacy codebases using these languages</i>
+      </p>
+    </div>
+    <div class="column learning" data-tone="tertiary">
+      <h3>I'm learning...</h3>
+      <ul class="blobs">
+        {learning.map((language, i) => {
+          const Pill = pillTag(language);
+          return (
+            <li style={`--i: ${i}`}>
+              <Pill
+                class="pill"
+                href={language.href}
+                type={Pill === "button" ? "button" : undefined}
+                lang={language.lang}
+                aria-describedby={language.tip && `learning-tip-${i}`}
+              >
+                {Pill !== "span" && <Ripple />}
+                {language.name}
+              </Pill>
+              {language.tip && (
+                <span class="tip" role="tooltip" id={`learning-tip-${i}`}>
+                  {language.tip}
+                </span>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="contexts">
+  <h3>In these contexts...</h3>
+  <p class="aside">(basically all over the place!)</p>
+  <ul>
+    {contexts.map(({ glyph, title, href, items, splitItems }) => (
+      <li>
+        <Card calm href={splitItems ? undefined : href}>
+          <div class="context">
+            <Blob>{glyph}</Blob>
+            {splitItems ? (
+              <a class="title-link" {href}>
+                {title}
+              </a>
+            ) : (
+              <strong>{title}</strong>
+            )}
+            {items && <ChipList {items} />}
+          </div>
+        </Card>
+      </li>
+    ))}
+  </ul>
+</section>
+
+<style>
+  .table {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 0.5rem;
+  }
+  .column {
+    display: grid;
+    align-content: start;
+    gap: 1rem;
+    padding: 1.5rem;
+    background: var(--bg);
+    color: var(--fg);
+  }
+  /* The two columns read as one table: outer corners big, the seam between them tight */
+  .speak {
+    border-radius: 2rem 0.5rem 0.5rem 2rem;
+  }
+  .learning {
+    border-radius: 0.5rem 2rem 2rem 0.5rem;
+  }
+  h3 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 800;
+    font-variation-settings: "wdth" 125;
+  }
+
+  .blobs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .blobs li {
+    position: relative;
+  }
+  .pill {
+    position: relative;
+    display: block;
+    padding: 0.5rem 1.1rem;
+    border: 0;
+    background: var(--fg);
+    color: var(--bg);
+    font: inherit;
+    font-weight: 600;
+    border-radius: 55% 45% 50% 50% / 60% 45% 55% 40%;
+    /* Negative delays so each blob is at a different point in its wobble */
+    animation: wobble 6s ease-in-out infinite alternate;
+    animation-delay: calc(var(--i) * -1.7s);
+    transition:
+      scale 0.45s var(--spring-fast),
+      rotate 0.45s var(--spring-fast),
+      background 0.2s var(--effects),
+      color 0.2s var(--effects);
+  }
+  @keyframes wobble {
+    50% {
+      border-radius: 40% 60% 45% 55% / 45% 60% 40% 55%;
+    }
+    100% {
+      border-radius: 60% 40% 58% 42% / 52% 40% 60% 48%;
+    }
+  }
+
+  /* Still learning: hollow, dashed and slowly breathing, i.e. not fully grown yet */
+  .learning .pill {
+    background: transparent;
+    color: var(--fg);
+    outline: 2px dashed var(--fg);
+    outline-offset: -2px;
+    animation:
+      wobble 6s ease-in-out infinite alternate,
+      breathe 2.4s ease-in-out infinite alternate;
+    animation-delay: calc(var(--i) * -1.7s), calc(var(--i) * -1.2s);
+  }
+  @keyframes breathe {
+    to {
+      scale: 1.06;
+    }
+  }
+  .learning .pill:focus-visible {
+    outline: 3px solid var(--md-primary);
+    outline-offset: 3px;
+  }
+
+  a.pill,
+  button.pill {
+    -webkit-tap-highlight-color: transparent;
+  }
+  a.pill {
+    text-decoration: none;
+  }
+  /* Links still get their tooltip, but only plain tooltip buttons say "help" */
+  button.pill {
+    cursor: help;
+  }
+  .pill:active {
+    scale: 0.94;
+  }
+
+  .star {
+    margin-left: 0.1em;
+    font-weight: 800;
+  }
+  .footnote {
+    margin: 0;
+    font-size: 0.875rem;
+  }
+
+  /* Tooltips: inverted surface, spring in above the blob. Shown on focus too, which is how touch gets them */
+  .tip {
+    position: absolute;
+    left: 50%;
+    bottom: calc(100% + 0.5rem);
+    z-index: 2;
+    width: max-content;
+    max-width: min(14rem, 70vw);
+    padding: 0.5rem 0.875rem;
+    border-radius: 1rem;
+    background: var(--md-on-surface);
+    color: var(--md-surface);
+    font-size: 0.875rem;
+    line-height: 1.35;
+    text-align: center;
+    pointer-events: none;
+    opacity: 0;
+    translate: -50% 0.5rem;
+    scale: 0.8;
+    transition:
+      opacity 0.2s var(--effects),
+      translate 0.45s var(--spring-fast),
+      scale 0.45s var(--spring-fast);
+  }
+  .pill:focus ~ .tip {
+    opacity: 1;
+    translate: -50% 0;
+    scale: 1;
+  }
+
+  @media (hover: hover) {
+    /* Hovered blob bulges and tilts; its neighbours make room */
+    li:hover > .pill {
+      scale: 1.15;
+      rotate: -4deg;
+    }
+    .blobs:has(li:hover) li:not(:hover) > .pill {
+      scale: 0.94;
+    }
+    .learning li:hover > .pill {
+      background: var(--fg);
+      color: var(--bg);
+    }
+    li:hover > .tip {
+      opacity: 1;
+      translate: -50% 0;
+      scale: 1;
+    }
+    /* Pointing at the footnote calls out the languages it's about */
+    .speak:has(.footnote:hover) .legacy > .pill {
+      scale: 1.12;
+      rotate: 3deg;
+      background: var(--md-tertiary);
+      color: var(--md-on-tertiary);
+    }
+    .speak:has(.footnote:hover) li:not(.legacy) > .pill {
+      scale: 0.94;
+    }
+  }
+
+  .contexts {
+    margin-top: 2rem;
+    text-align: center;
+  }
+  .aside {
+    margin: -0.5rem 0 1rem;
+    text-align: center;
+    font-size: 1rem;
+    font-style: italic;
+    color: var(--md-on-surface-variant);
+  }
+  /* Conjoined stack: big outer corners, tight seams */
+  .contexts ul {
+    display: grid;
+    gap: 0.25rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .contexts li {
+    display: grid;
+  }
+  .contexts li > :global(.card) {
+    padding: 1rem 1.5rem;
+    border-radius: 0.5rem;
+  }
+  .contexts li:first-child > :global(.card) {
+    border-top-left-radius: 2rem;
+    border-top-right-radius: 2rem;
+  }
+  .contexts li:last-child > :global(.card) {
+    border-bottom-left-radius: 2rem;
+    border-bottom-right-radius: 2rem;
+  }
+  .context {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 1rem;
+    font-size: 1.25rem;
+  }
+  .title-link {
+    color: inherit;
+    font-weight: 700;
+    text-decoration: underline;
+    text-decoration-thickness: 0.1em;
+    text-underline-offset: 0.2em;
+    text-decoration-color: color-mix(in srgb, currentColor 40%, transparent);
+    transition:
+      text-decoration-color 0.2s var(--effects),
+      scale 0.45s var(--spring-fast);
+  }
+  .title-link:active {
+    scale: 0.96;
+  }
+  @media (hover: hover) {
+    .title-link:hover {
+      text-decoration-color: currentColor;
+    }
+  }
+  /* Finger-sized tap target without moving the layout */
+  @media (pointer: coarse) {
+    .title-link {
+      display: inline-flex;
+      align-items: center;
+      min-height: 2.75rem;
+    }
+  }
+  .context :global(.blob) {
+    flex: none;
+    width: 3rem;
+    font-size: 1.5rem;
+  }
+  .context :global(.chips) {
+    margin-left: auto;
+    justify-content: flex-end;
+  }
+
+  @media (max-width: 600px) {
+    .table {
+      grid-template-columns: 1fr;
+    }
+    .speak {
+      border-radius: 2rem 2rem 0.5rem 0.5rem;
+    }
+    .learning {
+      border-radius: 0.5rem 0.5rem 2rem 2rem;
+    }
+    .context :global(.chips) {
+      margin-left: 0;
+      justify-content: flex-start;
+      flex-basis: 100%;
+    }
+  }
+</style>
