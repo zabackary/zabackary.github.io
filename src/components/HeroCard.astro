@@ -13,9 +13,14 @@ const { tone = "primary", transitionName } = Astro.props;
 <section
   class="hero"
   data-tone={tone}
-  style={transitionName && `view-transition-name: ${transitionName}; view-transition-class: shared`}
+  style={
+    transitionName &&
+    `view-transition-name: ${transitionName}; view-transition-class: shared`
+  }
 >
-  <div class="text"><slot /></div>
+  <div class="text">
+    <slot />
+  </div>
   <slot name="aside" />
 </section>
 
@@ -30,5 +35,8 @@ const { tone = "primary", transitionName } = Astro.props;
     border-radius: 3rem;
     background: var(--bg);
     color: var(--fg);
+  }
+  .text {
+    max-width: 100%;
   }
 </style>

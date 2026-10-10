@@ -10,7 +10,10 @@ import { projectTransitions } from "../../transitions";
 
 export async function getStaticPaths() {
   const projects = await getCollection("projects");
-  return projects.map((project) => ({ params: { id: project.id }, props: { project } }));
+  return projects.map((project) => ({
+    params: { id: project.id },
+    props: { project },
+  }));
 }
 
 const { project } = Astro.props;
@@ -25,13 +28,19 @@ const names = projectTransitions(project.id);
     <h1 class="display">{name}</h1>
     <p class="description">{description}</p>
     <ChipList items={tags} />
-    <Blob slot="aside" size="large" transitionName={names.blob}>{glyph}</Blob>
+    <Blob slot="aside" size="large" transitionName={names.blob}>
+      {glyph}
+    </Blob>
   </HeroCard>
 
-  <article class="prose"><Content /></article>
+  <article class="prose">
+    <Content />
+  </article>
 
   <div class="actions">
-    <Button href="/projects" variant="tonal" data-back>← All projects</Button>
+    <Button href="/projects" variant="tonal" data-back>
+      ← All projects
+    </Button>
     {link && <Button href={link}>View project</Button>}
   </div>
 </Layout>
@@ -39,17 +48,32 @@ const names = projectTransitions(project.id);
 <script>
   // Without JS this is a plain link to "/projects". With JS, go back when we arrived from this site,
   // so the history stack (and the reverse view transition) behaves like a real back.
-  document.querySelector<HTMLAnchorElement>("[data-back]")?.addEventListener("click", (event) => {
-    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
-    if (!document.referrer || new URL(document.referrer).origin !== location.origin) return;
-    event.preventDefault();
-    history.back();
-  });
+  document
+    .querySelector<HTMLAnchorElement>("[data-back]")
+    ?.addEventListener("click", (event) => {
+      if (
+        event.metaKey ||
+        event.ctrlKey ||
+        event.shiftKey ||
+        event.altKey ||
+        event.button !== 0
+      )
+        return;
+      if (
+        !document.referrer ||
+        new URL(document.referrer).origin !== location.origin
+      )
+        return;
+      event.preventDefault();
+      history.back();
+    });
 </script>
 
 <style>
   .display {
     font-size: clamp(2.5rem, 9vw, 5.5rem);
+    font-weight: 800;
+    word-wrap: break-word;
   }
   .description {
     max-width: 32rem;
