@@ -26,7 +26,7 @@ Markdown body shown on the detail page.
 
 `color` is optional. When set, the detail page re-themes every `--md-*` token from it using `@material/material-color-utilities` (`src/theme.ts`): the colour is harmonized toward the site's seed colour, then a content scheme is generated for light and dark mode. Quote the value in YAML (`#` starts a comment). Without it the page uses the site theme. The same colour tints the project's card on the home grid (its container colour, light/dark aware). Without `color`, both use the site seed colour.
 
-`startDate` / `endDate` exist in the schema but aren't displayed yet.
+`startDate` / `endDate` (ISO strings) aren't displayed, but About uses `endDate ?? startDate` to pick the 3 most recent projects; undated ones sort last.
 
 Pick different colours for neighbouring projects so the grid doesn't read as one colour.
 

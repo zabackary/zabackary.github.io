@@ -1,6 +1,6 @@
 # Architecture
 
-> Summary: Static Astro site. Pages in `src/pages`, one `projects` content collection in `src/content/projects`, small scoped-style components in `src/components`, tokens and type in one global stylesheet. Page transitions are native CSS view transitions (`styles/transitions.css`); the only client JS is the `Ripple` custom element, a small WebGL shader. No UI library; M3 Expressive is implemented by hand.
+> Summary: Static Astro site. About is the home page (`/`, with a carousel of the 3 most recent projects); all projects are at `/projects`. Pages in `src/pages`, one `projects` content collection in `src/content/projects`, small scoped-style components in `src/components`, tokens and type in one global stylesheet. Page transitions are native CSS view transitions (`styles/transitions.css`); the only client JS is the `Ripple` custom element, a small WebGL shader. No UI library; M3 Expressive is implemented by hand.
 
 Last updated: 2026-10-10
 
@@ -16,8 +16,8 @@ src/
   content/projects/*.md  one file per project
   layouts/Layout.astro   <head>, fonts, NavBar, <main>
   pages/
-    index.astro          hero + project grid
-    about.astro
+    index.astro          About: hero, bio cards, 3 most recent projects in a carousel
+    projects/index.astro project grid (all projects)
     projects/[id].astro  project detail (renders the Markdown body)
   components/            see below
   styles/global.css      tokens, base, type classes, tone roles, .grid, .prose
@@ -40,6 +40,7 @@ All have scoped `<style>`; they take colour from the surrounding tone, so they d
 | `Blob` | Morphing shape holding a glyph. `size`: `small` / `large`. |
 | `Card` | Link (with `href`) or plain section. Only links animate on hover and ripple. |
 | `ProjectCard` | A collection entry rendered as a `Card`. |
+| `ProjectCarousel` | Horizontal scroll-snap row of `ProjectCard`s, items shrink toward the edges (scroll-driven animation, where supported). Used on About. |
 | `HeroCard` | Big page header; default slot + named `aside` slot. |
 | `NavBar` | Sticky pill nav; marks the current page with `aria-current`. |
 

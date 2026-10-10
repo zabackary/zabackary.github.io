@@ -1,0 +1,51 @@
+---
+import type { CollectionEntry } from "astro:content";
+import ProjectCard from "./ProjectCard.astro";
+
+interface Props {
+  projects: CollectionEntry<"projects">[];
+}
+
+const { projects } = Astro.props;
+---
+
+<ul>
+  {projects.map((project) => (
+    <li>
+      <ProjectCard {project} />
+    </li>
+  ))}
+</ul>
+
+<style>
+  ul {
+    display: flex;
+    gap: 0.5rem;
+    margin: 0;
+    /* Room for the card's hover lift and focus ring, which the scroller would otherwise clip */
+    padding: 0.75rem 0.5rem;
+    margin-inline: -0.5rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: 0.5rem;
+    list-style: none;
+    scrollbar-width: none;
+  }
+  li {
+    display: grid;
+    flex: 0 0 min(22rem, 80%);
+    scroll-snap-align: start;
+  }
+  /* Items shrink as they leave the visible edge, like an M3 carousel */
+  @supports (animation-timeline: view()) {
+    li {
+      animation: shrink linear both;
+      animation-timeline: view(inline);
+    }
+  }
+  @keyframes shrink {
+    0% { transform: scale(0.8); opacity: 0.5; }
+    25%, 75% { transform: none; opacity: 1; }
+    100% { transform: scale(0.8); opacity: 0.5; }
+  }
+</style>
