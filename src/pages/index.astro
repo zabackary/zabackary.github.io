@@ -5,6 +5,7 @@ import Card from "../components/Card.astro";
 import HeroCard from "../components/HeroCard.astro";
 import ProjectCarousel from "../components/ProjectCarousel.astro";
 import Layout from "../layouts/Layout.astro";
+import Divider from "../components/Divider.astro";
 
 // Newest first; undated projects go last
 const recent = (await getCollection("projects"))
@@ -28,6 +29,12 @@ const recent = (await getCollection("projects"))
     </Blob>
   </HeroCard>
 
+  <h2 class="tagline">
+    Just a student living in Japan doing embedded, web, and native apps.
+  </h2>
+
+  <Divider />
+
   <ProjectCarousel projects={recent}>
     <Fragment slot="label">
       Recent
@@ -35,6 +42,8 @@ const recent = (await getCollection("projects"))
       projects
     </Fragment>
   </ProjectCarousel>
+
+  <Divider />
 
   <div class="grid">
     <Card tone="secondary">
@@ -56,5 +65,29 @@ const recent = (await getCollection("projects"))
 <style>
   .grid {
     margin-top: 1rem;
+  }
+  .tagline {
+    max-width: 30rem;
+    font-size: 1.25rem;
+    font-weight: 500;
+    color: var(--md-on-surface-variant);
+    text-align: center;
+    margin: 1rem auto;
+  }
+  .tagline::before {
+    margin-right: 0.5rem;
+    content: "“";
+  }
+  .tagline::after {
+    margin-left: 0.5rem;
+    content: "”";
+  }
+  .tagline::before,
+  .tagline::after {
+    transform: scale(1.5);
+    display: inline-block;
+    vertical-align: -0.25em;
+    color: var(--md-on-surface);
+    font-weight: 800;
   }
 </style>

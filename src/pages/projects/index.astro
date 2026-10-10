@@ -16,15 +16,24 @@ const projects = await getCollection("projects");
       have built.
     </h1>
     <p class="intro">
-      Small apps, games and experiments, some finished, plenty not.
+      Embedded systems, web apps, actual apps — open source for everyone when
+      possible. I strive to create{" "}
+      <span class="squiggle">solutions and experiences for my community</span>{" "}
+      and the world through service.
     </p>
-    <Button href="/">About me</Button>
-    <Blob slot="aside" size="large">
-      ✦
-    </Blob>
+    <div class="buttons">
+      <Button href="/">
+        Read more about the <span class="why-squiggle">why</span>
+      </Button>
+      <Button href="#list" variant="outlined" class:list={["cta"]}>
+        Dive in
+      </Button>
+    </div>
   </HeroCard>
 
-  <h2 class="headline">Projects</h2>
+  <h2 class="headline" id="list">
+    Projects
+  </h2>
   <div class="grid">
     {projects.map((project) => (
       <ProjectCard {project} />
@@ -35,5 +44,30 @@ const projects = await getCollection("projects");
 <style>
   .intro {
     max-width: 30rem;
+  }
+  .squiggle {
+    font-weight: 600;
+    text-decoration: underline wavy var(--md-on-tertiary-container);
+    text-decoration-skip-ink: none;
+    text-decoration-thickness: 0.05em;
+  }
+  .why-squiggle {
+    font-weight: 800;
+    font-variation-settings: "wght" 800;
+    font-style: oblique;
+  }
+  .buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .cta {
+    color: var(--md-on-tertiary-container) !important;
+  }
+  .headline {
+    margin: 2rem auto;
+    font-size: 2rem;
+    font-weight: 800;
+    text-align: center;
   }
 </style>

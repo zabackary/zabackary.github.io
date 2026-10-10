@@ -3,7 +3,7 @@ import Ripple from "./Ripple.astro";
 
 interface Props {
   href?: string;
-  variant?: "filled" | "tonal";
+  variant?: "filled" | "tonal" | "outlined" | "text";
   [attr: `data-${string}`]: string | boolean;
 }
 
@@ -13,7 +13,11 @@ const Tag = href ? "a" : "button";
 
 <Tag class:list={["button", variant]} href={href} {...attrs}>
   <Ripple />
-  <slot />
+  <slot name="leading-icon" />
+  <span>
+    <slot />
+  </span>
+  <slot name="trailing-icon" />
 </Tag>
 
 <style>
@@ -51,5 +55,12 @@ const Tag = href ? "a" : "button";
   .tonal {
     background: var(--md-secondary-container);
     color: var(--md-on-secondary-container);
+  }
+  .outlined {
+    border: 1px solid var(--md-outline);
+    color: var(--md-primary);
+  }
+  .text {
+    color: var(--md-primary);
   }
 </style>
