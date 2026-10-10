@@ -20,7 +20,7 @@ const path = Astro.url.pathname;
   nav {
     view-transition-name: nav; /* keeps the nav from fading with the page */
     position: sticky;
-    top: 0.75rem;
+    top: 1rem; /* matches the body padding so the nav doesn't shift when it sticks */
     z-index: 10;
     display: flex;
     gap: 0.25rem;
