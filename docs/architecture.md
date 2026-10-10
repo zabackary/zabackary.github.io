@@ -1,6 +1,6 @@
 # Architecture
 
-> Summary: Static Astro site. Pages in `src/pages`, one `projects` content collection in `src/content/projects`, small scoped-style components in `src/components`, tokens and type in one global stylesheet. Page transitions are native CSS view transitions (`styles/transitions.css`); the only client JS is the small `Ripple` custom element. No UI library; M3 Expressive is implemented by hand.
+> Summary: Static Astro site. Pages in `src/pages`, one `projects` content collection in `src/content/projects`, small scoped-style components in `src/components`, tokens and type in one global stylesheet. Page transitions are native CSS view transitions (`styles/transitions.css`); the only client JS is the `Ripple` custom element, a small WebGL shader. No UI library; M3 Expressive is implemented by hand.
 
 Last updated: 2026-10-10
 
@@ -35,7 +35,7 @@ All have scoped `<style>`; they take colour from the surrounding tone, so they d
 | Component | Purpose |
 | --- | --- |
 | `Button` | `<a>` if `href`, else `<button>`. `variant`: `filled` / `tonal`. Has a `Ripple`. |
-| `Ripple` | Press ripple (`<ripple-effect>` custom element). First child of a `position: relative` button/link; inherits its radius, uses `currentColor`, skipped under reduced motion. |
+| `Ripple` | Android-style sparkle press ripple: a `<ripple-effect>` custom element drawing a soft circle with twinkling dots in a WebGL fragment shader. First child of a `position: relative` button/link; clipped to its radius, uses its `color`. The WebGL context exists only while a ripple runs. Skipped under reduced motion or without WebGL (a console warning says why). Shader numbers (density, twinkle speed, opacity) are tuned by eye; they're in the fragment shader. |
 | `Chip`, `ChipList` | Small tag pills; `ChipList` takes `items: string[]`. |
 | `Blob` | Morphing shape holding a glyph. `size`: `small` / `large`. |
 | `Card` | Link (with `href`) or plain section. Only links animate on hover and ripple. |
