@@ -44,7 +44,7 @@ All have scoped `<style>`; they take colour from the surrounding tone, so they d
 | `Divider` | Wavy `<hr>`: a tiled SVG mask filled with `color` (any CSS colour, default `var(--md-outline)`). Decorative, no interaction states. |
 | `IconButton` | Link with a Material Symbols arrow (inlined SVG, no font) on a 9-lobed cookie shape that turns on hover and squashes on press. Has a `Ripple`. |
 | `HeroCard` | Big page header; default slot + named `aside` slot. |
-| `NavBar` | Sticky pill nav; marks the current page with `aria-current`. |
+| `NavBar` | Sticky pill nav; marks the current page with `aria-current`. Links have a `Ripple`. |
 
 ## Styling rules
 

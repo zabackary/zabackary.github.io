@@ -1,19 +1,24 @@
 ---
+import Ripple from "./Ripple.astro";
+
 const links = [
   { href: "/", label: "About", match: (path: string) => path === "/" },
-  { href: "/projects", label: "Projects", match: (path: string) => path.startsWith("/projects") },
+  {
+    href: "/projects",
+    label: "Projects",
+    match: (path: string) => path.startsWith("/projects"),
+  },
 ];
 const path = Astro.url.pathname;
 ---
 
 <nav aria-label="Primary">
-  {
-    links.map(({ href, label, match }) => (
-      <a href={href} aria-current={match(path) ? "page" : undefined}>
-        {label}
-      </a>
-    ))
-  }
+  {links.map(({ href, label, match }) => (
+    <a href={href} aria-current={match(path) ? "page" : undefined}>
+      <Ripple />
+      {label}
+    </a>
+  ))}
 </nav>
 
 <style>
@@ -31,6 +36,8 @@ const path = Astro.url.pathname;
     background: var(--md-surface-container-high);
   }
   a {
+    position: relative;
+    overflow: hidden;
     display: inline-flex;
     align-items: center;
     min-height: 2.75rem;
@@ -39,6 +46,7 @@ const path = Astro.url.pathname;
     color: var(--md-on-surface-variant);
     font-weight: 600;
     text-decoration: none;
+    -webkit-tap-highlight-color: transparent;
     transition: background 0.2s var(--effects);
   }
   @media (hover: hover) {
