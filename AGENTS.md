@@ -22,7 +22,7 @@ Personal project portfolio (Astro, static, no framework runtime). Material 3 Exp
 6. **Keep docs current.** After any big change (new component, new page type, changed convention, changed design decision), update the relevant doc *and* its summary line (see below).
 7. **Ask questions.** If there are any problems, it is fine to ask for human help.
 8. **Commit.** Make sure to do targeted commits for large changes.
-9. **Use the native edit tools.** Change files with the Read/Edit/Write tools, not Python, sed, awk or shell redirects. Only script an edit when it's a bulk change the edit tools can't reasonably do.
+9. **Prefer the native edit tools.** Change files with the Read/Edit/Write tools rather than Python, `sed`, shell redirects and the like. Other tools are fine when the edit tools would be tedious, e.g. a bulk rename.
 
 ## Doc maintenance
 
