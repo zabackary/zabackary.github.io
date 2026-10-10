@@ -40,7 +40,7 @@ All have scoped `<style>`; they take colour from the surrounding tone, so they d
 | `Blob` | Morphing shape holding a glyph. `size`: `small` / `large`. |
 | `Card` | Link (with `href`) or plain section. Only links animate on hover and ripple. `calm` uses `surface-container-high` and skips the corner morph. |
 | `ProjectCard` | A collection entry rendered as a `Card`. `compact` drops description and tags and uses the calm card instead of the project colour. |
-| `ProjectCarousel` | Horizontal scroll-snap row of equal-size compact `ProjectCard`s ending in a cookie `IconButton` to `/projects`. Used on About, under the hero. |
+| `ProjectCarousel` | Horizontal scroll-snap row of equal-size compact `ProjectCard`s, led by a vertical `label` slot ending in a cookie `IconButton` to `/projects`. Used on About, under the hero. |
 | `IconButton` | Link with a Material Symbols arrow (inlined SVG, no font) on a 9-lobed cookie shape that turns on hover and squashes on press. Has a `Ripple`. |
 | `HeroCard` | Big page header; default slot + named `aside` slot. |
 | `NavBar` | Sticky pill nav; marks the current page with `aria-current`. |

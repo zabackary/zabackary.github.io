@@ -8,12 +8,16 @@ import Layout from "../layouts/Layout.astro";
 
 // Newest first; undated projects go last
 const recent = (await getCollection("projects"))
-  .sort((a, b) => (b.data.endDate ?? b.data.startDate ?? "").localeCompare(a.data.endDate ?? a.data.startDate ?? ""))
+  .sort((a, b) =>
+    (b.data.endDate ?? b.data.startDate ?? "").localeCompare(
+      a.data.endDate ?? a.data.startDate ?? "",
+    ),
+  )
   .slice(0, 3);
 ---
 
 <Layout title="about zabackary">
-  <HeroCard tone="tertiary">
+  <HeroCard tone="primary">
     <h1 class="display">
       Hi, I'm
       <br />
@@ -24,8 +28,13 @@ const recent = (await getCollection("projects"))
     </Blob>
   </HeroCard>
 
-  <h2 class="headline">Recent projects</h2>
-  <ProjectCarousel projects={recent} />
+  <ProjectCarousel projects={recent}>
+    <Fragment slot="label">
+      Recent
+      <br />
+      projects
+    </Fragment>
+  </ProjectCarousel>
 
   <div class="grid">
     <Card tone="secondary">
