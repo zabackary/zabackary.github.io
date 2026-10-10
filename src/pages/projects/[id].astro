@@ -31,10 +31,21 @@ const names = projectTransitions(project.id);
   <article class="prose"><Content /></article>
 
   <div class="actions">
-    <Button href="/" variant="tonal">← All projects</Button>
+    <Button href="/" variant="tonal" data-back>← All projects</Button>
     {link && <Button href={link}>View project</Button>}
   </div>
 </Layout>
+
+<script>
+  // Without JS this is a plain link to "/". With JS, go back when we arrived from this site,
+  // so the history stack (and the reverse view transition) behaves like a real back.
+  document.querySelector<HTMLAnchorElement>("[data-back]")?.addEventListener("click", (event) => {
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
+    if (!document.referrer || new URL(document.referrer).origin !== location.origin) return;
+    event.preventDefault();
+    history.back();
+  });
+</script>
 
 <style>
   .display {

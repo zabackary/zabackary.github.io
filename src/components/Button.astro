@@ -4,13 +4,14 @@ import Ripple from "./Ripple.astro";
 interface Props {
   href?: string;
   variant?: "filled" | "tonal";
+  [attr: `data-${string}`]: string | boolean;
 }
 
-const { href, variant = "filled" } = Astro.props;
+const { href, variant = "filled", ...attrs } = Astro.props;
 const Tag = href ? "a" : "button";
 ---
 
-<Tag class:list={["button", variant]} href={href}>
+<Tag class:list={["button", variant]} href={href} {...attrs}>
   <Ripple />
   <slot />
 </Tag>

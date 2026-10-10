@@ -42,7 +42,7 @@ Run through this for any new or changed interactive element.
 - [ ] Respects `prefers-reduced-motion` (global rule already disables animation; don't override it).
 - [ ] Text contrast meets WCAG AA on each tone, light and dark.
 - [ ] Decorative elements are `aria-hidden`; meaningful images have alt text.
-- [ ] Page works without JS (the only JS is the decorative press ripple).
+- [ ] Page works without JS (JS is only the decorative press ripple and the project page back button, which falls back to a plain link).
 
 ## Known gaps (do these when touching the area)
 
