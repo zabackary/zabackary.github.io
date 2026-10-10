@@ -34,6 +34,7 @@ const roles = {
   "--md-surface-container-low": m.surfaceContainerLow(),
   "--md-surface-container-lowest": m.surfaceContainerLowest(),
   "--md-on-surface-variant": m.onSurfaceVariant(),
+  "--md-outline": m.outline(),
   "--md-outline-variant": m.outlineVariant(),
 };
 

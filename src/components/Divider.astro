@@ -1,0 +1,22 @@
+---
+interface Props {
+  /** Any CSS colour, e.g. `var(--md-primary)` */
+  color?: string;
+}
+
+const { color = "var(--md-outline)" } = Astro.props;
+---
+
+<hr class="squiggle" style={`--squiggle: ${color}`} />
+
+<style>
+  .squiggle {
+    height: 8px;
+    margin: 1rem 0;
+    border: 0;
+    background: var(--squiggle);
+    /* One wave per 20px, tiled along the width; the colour shows through the mask */
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='8' viewBox='0 0 20 8'%3E%3Cpath d='M0 4Q5 0 10 4T20 4' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E")
+      repeat-x left center / 20px 8px;
+  }
+</style>
