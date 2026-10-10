@@ -1,6 +1,6 @@
 # Design and feel
 
-> Summary: Feel is the top priority. Expressive = big rounded shapes that morph, springy overshoot motion, heavy wide display type, tonal colour containers. Every interactive element must handle hover (gated to `(hover: hover)`), focus-visible (one global ring in `global.css` that pops in 0 → 8px → 3px, after the M3E ButtonBase ring), active, keyboard and touch. Skip link and 44px tap targets are in place. Page navigation uses native cross-document view transitions (card ↔ hero container transform, shared blob, sliding nav pill, fade/rise for the rest; off under reduced motion). Remaining gaps: font hosting, theme toggle, real screenshots.
+> Summary: Feel is the top priority. Expressive = big rounded shapes that morph, springy overshoot motion, heavy wide display type, tonal colour containers. Every interactive element must handle hover (gated to `(hover: hover)`), focus-visible (one global ring in `global.css` that pops in 0 → 8px → 3px, after the M3E ButtonBase ring), active (buttons and link cards also get a press ripple), keyboard and touch. Skip link and 44px tap targets are in place. Page navigation uses native cross-document view transitions (card ↔ hero container transform, shared blob, sliding nav pill, fade/rise for the rest; off under reduced motion). Remaining gaps: font hosting, theme toggle, real screenshots.
 
 Last updated: 2026-10-10
 
@@ -42,7 +42,7 @@ Run through this for any new or changed interactive element.
 - [ ] Respects `prefers-reduced-motion` (global rule already disables animation; don't override it).
 - [ ] Text contrast meets WCAG AA on each tone, light and dark.
 - [ ] Decorative elements are `aria-hidden`; meaningful images have alt text.
-- [ ] Page works without JS (currently there is none).
+- [ ] Page works without JS (the only JS is the decorative press ripple).
 
 ## Known gaps (do these when touching the area)
 

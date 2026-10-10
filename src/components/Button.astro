@@ -1,4 +1,6 @@
 ---
+import Ripple from "./Ripple.astro";
+
 interface Props {
   href?: string;
   variant?: "filled" | "tonal";
@@ -9,12 +11,14 @@ const Tag = href ? "a" : "button";
 ---
 
 <Tag class:list={["button", variant]} href={href}>
+  <Ripple />
   <slot />
 </Tag>
 
 <style>
   /* Pill at rest, squarer on hover and press */
   .button {
+    position: relative;
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;

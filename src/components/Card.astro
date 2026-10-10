@@ -1,6 +1,7 @@
 ---
 import { containerStyle } from "../theme";
 import type { Tone } from "../types";
+import Ripple from "./Ripple.astro";
 
 interface Props {
   tone?: Tone;
@@ -28,11 +29,13 @@ const style = [
   href={href}
   style={style || undefined}
 >
+  {href && <Ripple />}
   <slot />
 </Tag>
 
 <style>
   .card {
+    position: relative;
     display: grid;
     gap: 1rem;
     padding: 1.75rem;

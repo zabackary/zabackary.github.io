@@ -1,0 +1,82 @@
+---
+// Put as the first child of a button or link; the parent needs `position: relative`.
+---
+
+<ripple-effect aria-hidden="true"></ripple-effect>
+
+<style>
+  ripple-effect {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  /* Circles are added by the script below, so they aren't scoped */
+  ripple-effect :global(.ripple) {
+    position: absolute;
+    border-radius: 50%;
+    /* Solid core with a soft rim. 80% must match SOLID in the script. */
+    background: radial-gradient(closest-side, currentColor 80%, transparent);
+    opacity: 0.16;
+  }
+</style>
+
+<script>
+  const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
+  // Fraction of the circle's radius that is fully opaque
+  const SOLID = 0.8;
+
+  class RippleEffect extends HTMLElement {
+    connectedCallback() {
+      const parent = this.parentElement;
+      if (!parent) return;
+      parent.addEventListener("pointerdown", (e) => {
+        if (e.button === 0) this.start(e.clientX, e.clientY, parent);
+      });
+      // Enter/Space on a keyboard-focused element fire a click with no pointer
+      parent.addEventListener("click", (e) => {
+        if (e.detail === 0) this.start(null, null, parent);
+      });
+    }
+
+    start(clientX: number | null, clientY: number | null, parent: HTMLElement) {
+      if (reducedMotion.matches) return;
+
+      const box = this.getBoundingClientRect();
+      const x = clientX === null ? box.width / 2 : clientX - box.left;
+      const y = clientY === null ? box.height / 2 : clientY - box.top;
+      // Big enough that the opaque core reaches the farthest corner, so the faded rim is never visible
+      const reach = Math.hypot(Math.max(x, box.width - x), Math.max(y, box.height - y));
+      const radius = reach / SOLID;
+
+      const circle = document.createElement("span");
+      circle.className = "ripple";
+      circle.style.cssText = `left:${x - radius}px;top:${y - radius}px;width:${radius * 2}px;height:${radius * 2}px`;
+      this.append(circle);
+
+      const grow = circle.animate(
+        { transform: ["scale(0)", "scale(1)"] },
+        { duration: 450, easing: "cubic-bezier(0.2, 0, 0, 1)", fill: "forwards" },
+      );
+
+      // Fade once the press is over and the circle has finished growing
+      const released = new Promise<void>((resolve) => {
+        const events = ["pointerup", "pointercancel", "pointerleave"];
+        const done = () => {
+          events.forEach((name) => parent.removeEventListener(name, done));
+          resolve();
+        };
+        if (clientX === null) return resolve();
+        events.forEach((name) => parent.addEventListener(name, done));
+      });
+      Promise.all([grow.finished, released]).then(() =>
+        circle
+          .animate({ opacity: [0.16, 0] }, { duration: 300, easing: "linear", fill: "forwards" })
+          .finished.then(() => circle.remove()),
+      );
+    }
+  }
+
+  customElements.define("ripple-effect", RippleEffect);
+</script>
