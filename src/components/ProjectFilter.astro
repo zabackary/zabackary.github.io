@@ -29,6 +29,16 @@ const known = {
   languages: [...new Set(projects.flatMap((p) => p.data.languages))],
 };
 
+// Display names for the script, keyed like its state: "tag" and "lang"
+const names = {
+  tag: Object.fromEntries(
+    [...new Set([...known.tags, ...featuredTags])].map((n) => [n, displayName(n, "tag")]),
+  ),
+  lang: Object.fromEntries(
+    [...new Set([...known.languages, ...featuredLanguages])].map((n) => [n, displayName(n)]),
+  ),
+};
+
 // Material Symbols paths, 960 viewBox
 const icons = {
   tag: "M856-390 570-104q-12 12-27 18t-30 6q-15 0-30-6t-27-18L103-457q-11-11-17-25.500T80-513v-287q0-33 23.500-56.500T160-880h287q16 0 31 6.500t26 17.500l352 353q12 12 17.500 27t5.500 30q0 15-5.500 29.500T856-390ZM513-160l286-286-353-354H160v286l353 354ZM260-640q25 0 42.500-17.500T320-700q0-25-17.500-42.500T260-760q-25 0-42.500 17.500T200-700q0 25 17.500 42.500T260-640Z",
@@ -99,7 +109,7 @@ const icons = {
       <button type="button" class="toggle" data-kind="tag" data-value={tag} aria-pressed="false">
         <Ripple />
         <svg viewBox="0 -960 960 960" aria-hidden="true"><path d={icons.tag}></path></svg>
-        {displayName(tag)}
+        {displayName(tag, "tag")}
       </button>
     </li>
   ))}
@@ -178,7 +188,7 @@ const icons = {
   </li>
 </template>
 
-<script define:vars={{ icons, names: Object.fromEntries([...known.tags, ...known.languages, ...featuredTags, ...featuredLanguages].map((n) => [n, displayName(n)])) }}>
+<script define:vars={{ icons, names }}>
   const root = document.querySelector(".bar");
   const quick = document.querySelector(".quick");
   const input = root.querySelector(".input");
@@ -225,7 +235,7 @@ const icons = {
     history.replaceState(null, "", location.pathname + (query ? "?" + query : "") + location.hash);
   };
 
-  const labelFor = (value) => names[value] ?? value;
+  const labelFor = (kind, value) => names[kind][value] ?? value;
 
   // Only tokens that weren't there last time pop in
   let shownTokens = null; // null on first render, so tokens from the URL don't pop
@@ -241,8 +251,8 @@ const icons = {
         now.add(kind + value);
         if (shownTokens && !shownTokens.has(kind + value)) token.classList.add("added");
         token.querySelector(".kind path").setAttribute("d", icon);
-        token.querySelector("span").textContent = labelFor(value);
-        token.setAttribute("aria-label", `Remove ${kind === "tag" ? "tag" : "language"} ${labelFor(value)}`);
+        token.querySelector("span").textContent = labelFor(kind, value);
+        token.setAttribute("aria-label", `Remove ${kind === "tag" ? "tag" : "language"} ${labelFor(kind, value)}`);
         token.addEventListener("click", () => {
           state[kind] = state[kind].filter((v) => v !== value);
           update();
@@ -296,7 +306,7 @@ const icons = {
     const [, prefix, rest] = text.toLowerCase().match(/^(?:(tag|lang):)?(.*)$/);
     const word = rest.trim();
     const matches = (kind, list) =>
-      list.find((v) => v === word || labelFor(v).toLowerCase() === word) && { kind, value: list.find((v) => v === word || labelFor(v).toLowerCase() === word) };
+      list.find((v) => v === word || labelFor(kind, v).toLowerCase() === word) && { kind, value: list.find((v) => v === word || labelFor(kind, v).toLowerCase() === word) };
     if (prefix === "tag") return matches("tag", known.tags);
     if (prefix === "lang") return matches("lang", known.languages);
     return matches("tag", known.tags) || matches("lang", known.languages);
@@ -322,7 +332,7 @@ const icons = {
       for (const [kind, list] of [["tag", known.tags], ["lang", known.languages]]) {
         if (prefix && prefix !== kind) continue;
         for (const value of list) {
-          const label = labelFor(value).toLowerCase();
+          const label = labelFor(kind, value).toLowerCase();
           if (state[kind].includes(value) || !(label.includes(text) || value.includes(text))) continue;
           suggestions.push({ kind, value, rank: label.startsWith(text) ? 0 : 1 });
         }
@@ -337,7 +347,7 @@ const icons = {
         option.setAttribute("role", "option");
         option.dataset.kind = kind;
         option.innerHTML = `<svg viewBox="0 -960 960 960" aria-hidden="true"><path d="${kind === "tag" ? icons.tag : icons.globe}"></path></svg>`;
-        option.append(labelFor(value));
+        option.append(labelFor(kind, value));
         // mousedown, not click, so the input keeps focus
         option.addEventListener("mousedown", (event) => {
           event.preventDefault();

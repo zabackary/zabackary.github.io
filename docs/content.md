@@ -13,7 +13,7 @@ Create `src/content/projects/<slug>.md`:
 name: Kaiwa
 description: One sentence shown on the card and detail hero.
 status: incomplete        # finished | wip | incomplete (default: finished)
-tags: [website, node]
+tags: [web, node]
 glyph: 💬                 # one emoji shown in the blob until screenshots exist
 color: "#5865f2"          # optional hex; colours the card, themes the detail page (see below)
 link: https://example.com # optional; adds a "View project" button

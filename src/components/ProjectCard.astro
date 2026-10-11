@@ -3,6 +3,7 @@ import type { CollectionEntry } from "astro:content";
 import Blob from "./Blob.astro";
 import Card from "./Card.astro";
 import ChipList from "./ChipList.astro";
+import { displayName } from "../displayNames";
 import defaultThumbnail from "../assets/default-thumb.webp";
 import { projectTransitions } from "../transitions";
 
@@ -27,7 +28,7 @@ const names = projectTransitions(project.id);
   <Blob transitionName={names.blob}>{glyph}</Blob>
   <h3>{name}</h3>
   {!compact && <p>{description}</p>}
-  {!compact && <ChipList items={[status, ...tags]} />}
+  {!compact && <ChipList items={[status, ...tags.map((tag) => displayName(tag, "tag"))]} />}
 </Card>
 
 <style>

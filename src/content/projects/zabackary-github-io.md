@@ -2,7 +2,7 @@
 name: zabackary.github.io
 description: A new portfolio site created with Claude as I graduate high school.
 status: incomplete
-tags: [website]
+tags: [web]
 glyph: 📚
 color: "#d5dba2"
 github: https://github.com/zabackary/zabackary.github.io

@@ -43,9 +43,9 @@ const hasMeta = Boolean(
   startDate || endDate || languages.length > 0 || tags.length > 0,
 );
 // Same filter URLs the About page links to
-const filterLinks = (param: string, values: string[]) =>
+const filterLinks = (param: "tag" | "lang", values: string[]) =>
   values.map((value) => ({
-    label: displayName(value),
+    label: displayName(value, param === "tag" ? "tag" : "language"),
     href: `/projects?${param}=${encodeURIComponent(value.toLowerCase())}`,
   }));
 const names = projectTransitions(project.id);
