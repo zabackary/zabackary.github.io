@@ -43,8 +43,7 @@ const icons = {
 ---
 
 <!-- Shown by the script below; without JS the controls would do nothing -->
-<search class="filter" hidden data-known={JSON.stringify(known)}>
-  <div class="bar">
+<search class="bar" hidden data-known={JSON.stringify(known)}>
     <div class="search">
       <div class="field">
         <svg class="leading" viewBox="0 -960 960 960" aria-hidden="true">
@@ -92,29 +91,28 @@ const icons = {
         ))}
       </div>
     </div>
-
-    <ul class="quick" aria-label="Quick filters">
-    {featuredTags.map((tag) => (
-      <li>
-        <button type="button" class="toggle" data-kind="tag" data-value={tag} aria-pressed="false">
-          <Ripple />
-          <svg viewBox="0 -960 960 960" aria-hidden="true"><path d={icons.tag}></path></svg>
-          {displayName(tag)}
-        </button>
-      </li>
-    ))}
-    {featuredLanguages.map((language) => (
-      <li>
-        <button type="button" class="toggle" data-kind="lang" data-value={language} aria-pressed="false">
-          <Ripple />
-          <svg viewBox="0 -960 960 960" aria-hidden="true"><path d={icons.globe}></path></svg>
-          {displayName(language)}
-        </button>
-      </li>
-    ))}
-    </ul>
-  </div>
 </search>
+
+<ul class="quick" hidden aria-label="Quick filters">
+  {featuredTags.map((tag) => (
+    <li>
+      <button type="button" class="toggle" data-kind="tag" data-value={tag} aria-pressed="false">
+        <Ripple />
+        <svg viewBox="0 -960 960 960" aria-hidden="true"><path d={icons.tag}></path></svg>
+        {displayName(tag)}
+      </button>
+    </li>
+  ))}
+  {featuredLanguages.map((language) => (
+    <li>
+      <button type="button" class="toggle" data-kind="lang" data-value={language} aria-pressed="false">
+        <Ripple />
+        <svg viewBox="0 -960 960 960" aria-hidden="true"><path d={icons.globe}></path></svg>
+        {displayName(language)}
+      </button>
+    </li>
+  ))}
+</ul>
 
 <p class="count" role="status"></p>
 
@@ -178,15 +176,17 @@ const icons = {
 </template>
 
 <script define:vars={{ icons, names: Object.fromEntries([...known.tags, ...known.languages, ...featuredTags, ...featuredLanguages].map((n) => [n, displayName(n)])) }}>
-  const root = document.querySelector(".filter");
+  const root = document.querySelector(".bar");
+  const quick = document.querySelector(".quick");
   const input = root.querySelector(".input");
   const field = root.querySelector(".field");
   const tokenList = root.querySelector(".tokens");
   const suggestionList = root.querySelector(".suggestions");
   const clear = root.querySelector(".clear");
   const sortButton = root.querySelector(".sort-button");
-  const menu = root.querySelector(".menu");
-  const toggles = [...root.querySelectorAll(".toggle")];
+  // Not just ".menu": the suggestions popup shares that class
+  const menu = root.querySelector(".sort .menu");
+  const toggles = [...quick.querySelectorAll(".toggle")];
   const grid = document.querySelector(".projects");
   const items = [...grid.children];
   const count = document.querySelector(".count");
@@ -449,23 +449,24 @@ const icons = {
   read();
   input.value = state.q;
   root.hidden = false;
+  quick.hidden = false;
   update();
 </script>
 
 <style>
-  .filter {
-    display: grid;
-    gap: 0.75rem;
-    margin-bottom: 1rem;
-  }
-  .filter[hidden] {
-    display: none;
-  }
+  /* Sticks just under the nav pill. Its background hides cards scrolling beneath. */
   .bar {
+    position: sticky;
+    top: 5rem;
+    z-index: 5;
     display: flex;
-    flex-wrap: wrap;
-    align-items: center;
+    align-items: flex-start;
     gap: 0.5rem;
+    padding: 0.5rem 0;
+    background: var(--md-surface);
+  }
+  .bar[hidden] {
+    display: none;
   }
   svg {
     fill: currentColor;
@@ -552,10 +553,6 @@ const icons = {
   }
   .token.added {
     animation: pop 0.45s var(--spring-fast);
-  }
-  .token[data-kind="lang"] {
-    background: var(--md-tertiary-container);
-    color: var(--md-on-tertiary-container);
   }
   @keyframes pop {
     from {
@@ -744,12 +741,15 @@ const icons = {
     }
   }
 
-  /* Beside the field and sort button; wraps to its own row when there's no room */
+  /* Under the sticky bar; scrolls away with the page */
+  .quick[hidden] {
+    display: none;
+  }
   .quick {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
-    margin: 0;
+    margin: 0 0 0.75rem;
     padding: 0;
     list-style: none;
   }
@@ -782,10 +782,6 @@ const icons = {
     background: var(--md-secondary-container);
     color: var(--md-on-secondary-container);
   }
-  .toggle[data-kind="lang"][aria-pressed="true"] {
-    background: var(--md-tertiary-container);
-    color: var(--md-on-tertiary-container);
-  }
   .toggle:active {
     border-radius: 0.9rem;
   }
@@ -801,9 +797,6 @@ const icons = {
     }
     .toggle[aria-pressed="true"]:hover {
       background: color-mix(in srgb, var(--md-on-surface) 8%, var(--md-secondary-container));
-    }
-    .toggle[data-kind="lang"][aria-pressed="true"]:hover {
-      background: color-mix(in srgb, var(--md-on-surface) 8%, var(--md-tertiary-container));
     }
   }
 
