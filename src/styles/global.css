@@ -12,7 +12,7 @@
   --chip-height: 2rem;
   --chip-radius: 0.5rem;
   --chip-pad: 0.75rem;
-  --chip-selected-radius: 1rem; /* selected chips are fully round, and square off on hover/press */
+  --chip-selected-radius: 1rem; /* pressed filter chips are fully round, and square off on hover/press */
 }
 
 * { box-sizing: border-box; }
