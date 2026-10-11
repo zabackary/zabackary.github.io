@@ -43,24 +43,31 @@ const icons = {
 <!-- Shown by the script below; without JS the controls would do nothing -->
 <search class="filter" hidden data-known={JSON.stringify(known)}>
   <div class="bar">
-    <div class="field">
-      <svg class="leading" viewBox="0 -960 960 960" aria-hidden="true">
-        <path d={icons.search}></path>
-      </svg>
-      <ul class="tokens"></ul>
-      <input
-        type="text"
-        class="input"
-        aria-label="Search projects, tags and languages"
-        placeholder="Search, or add a tag or language"
-        enterkeyhint="search"
-        autocomplete="off"
-        spellcheck="false"
-      />
-      <button type="button" class="clear" aria-label="Clear filters" hidden>
-        <Ripple />
-        <svg viewBox="0 -960 960 960" aria-hidden="true"><path d={icons.close}></path></svg>
-      </button>
+    <div class="search">
+      <div class="field">
+        <svg class="leading" viewBox="0 -960 960 960" aria-hidden="true">
+          <path d={icons.search}></path>
+        </svg>
+        <ul class="tokens"></ul>
+        <input
+          type="text"
+          class="input"
+          role="combobox"
+          aria-label="Search projects, tags and languages"
+          aria-controls="suggestions"
+          aria-expanded="false"
+          aria-autocomplete="list"
+          placeholder="Search, or add a tag or language"
+          enterkeyhint="search"
+          autocomplete="off"
+          spellcheck="false"
+        />
+        <button type="button" class="clear" aria-label="Clear filters" hidden>
+          <Ripple />
+          <svg viewBox="0 -960 960 960" aria-hidden="true"><path d={icons.close}></path></svg>
+        </button>
+      </div>
+      <ul class="suggestions" id="suggestions" role="listbox" aria-label="Suggestions" hidden></ul>
     </div>
 
     <div class="sort">
@@ -140,6 +147,7 @@ const icons = {
   const input = root.querySelector(".input");
   const field = root.querySelector(".field");
   const tokenList = root.querySelector(".tokens");
+  const suggestionList = root.querySelector(".suggestions");
   const clear = root.querySelector(".clear");
   const sortButton = root.querySelector(".sort-button");
   const menu = root.querySelector(".menu");
@@ -263,14 +271,85 @@ const icons = {
     return true;
   };
 
+  // Suggestions: unselected tags and languages whose name contains the typed text, prefix matches first
+  let suggestions = [];
+  let active = -1;
+  const showSuggestions = () => {
+    const text = input.value.trim().toLowerCase().replace(/^(tag|lang):/, "");
+    const prefix = input.value.trim().toLowerCase().match(/^(tag|lang):/)?.[1];
+    suggestions = [];
+    if (text || prefix) {
+      for (const [kind, list] of [["tag", known.tags], ["lang", known.languages]]) {
+        if (prefix && prefix !== kind) continue;
+        for (const value of list) {
+          const label = labelFor(value).toLowerCase();
+          if (state[kind].includes(value) || !(label.includes(text) || value.includes(text))) continue;
+          suggestions.push({ kind, value, rank: label.startsWith(text) ? 0 : 1 });
+        }
+      }
+      suggestions.sort((a, b) => a.rank - b.rank).splice(6);
+    }
+    active = -1;
+    suggestionList.replaceChildren(
+      ...suggestions.map(({ kind, value }, i) => {
+        const option = document.createElement("li");
+        option.id = `suggestion-${i}`;
+        option.setAttribute("role", "option");
+        option.dataset.kind = kind;
+        option.innerHTML = `<svg viewBox="0 -960 960 960" aria-hidden="true"><path d="${kind === "tag" ? icons.tag : icons.globe}"></path></svg>`;
+        option.append(labelFor(value));
+        // mousedown, not click, so the input keeps focus
+        option.addEventListener("mousedown", (event) => {
+          event.preventDefault();
+          pick(i);
+        });
+        return option;
+      }),
+    );
+    suggestionList.hidden = suggestions.length === 0;
+    input.setAttribute("aria-expanded", String(suggestions.length > 0));
+    input.removeAttribute("aria-activedescendant");
+  };
+  const setActive = (i) => {
+    active = i;
+    [...suggestionList.children].forEach((option, j) => option.setAttribute("aria-selected", String(j === i)));
+    if (i >= 0) input.setAttribute("aria-activedescendant", `suggestion-${i}`);
+    else input.removeAttribute("aria-activedescendant");
+  };
+  const pick = (i) => {
+    const { kind, value } = suggestions[i];
+    state[kind].push(value);
+    input.value = "";
+    state.q = "";
+    update();
+    showSuggestions();
+  };
+
   input.addEventListener("input", () => {
     state.q = input.value.trim();
     update();
+    showSuggestions();
   });
+  const closeSuggestions = () => {
+    suggestions = [];
+    suggestionList.hidden = true;
+    input.setAttribute("aria-expanded", "false");
+    input.removeAttribute("aria-activedescendant");
+  };
+  input.addEventListener("blur", closeSuggestions);
   input.addEventListener("keydown", (event) => {
-    if (event.key === "Enter") {
+    if (suggestions.length && (event.key === "ArrowDown" || event.key === "ArrowUp")) {
       event.preventDefault();
-      if (commitInput()) update();
+      const step = event.key === "ArrowDown" ? 1 : -1;
+      // Cycles through the options and a "none" slot (-1), so Enter can still run plain text
+      const slots = suggestions.length + 1;
+      setActive(((active + 1 + step + slots) % slots) - 1);
+    } else if (event.key === "Escape" && suggestions.length) {
+      closeSuggestions();
+    } else if (event.key === "Enter") {
+      event.preventDefault();
+      if (active >= 0) pick(active);
+      else if (commitInput()) update();
     } else if (event.key === "Backspace" && !input.value) {
       // Like most token fields: backspace on an empty input removes the last token
       const kind = state.lang.length ? "lang" : "tag";
@@ -354,11 +433,13 @@ const icons = {
     fill: currentColor;
   }
 
-  /* M3 filled text field: tonal container, rounded top, active indicator underneath */
-  .field {
+  .search {
     position: relative;
-    display: flex;
     flex: 1 1 14rem;
+  }
+  /* M3 search bar: a full-round tonal pill with a leading search icon and trailing clear */
+  .field {
+    display: flex;
     flex-wrap: wrap;
     align-items: center;
     gap: 0.25rem 0.5rem;
@@ -372,21 +453,58 @@ const icons = {
       border-radius 0.45s var(--spring-fast),
       background 0.2s var(--effects);
   }
-  .field::after {
-    content: "";
-    position: absolute;
-    inset: auto 1.5rem 0;
-    height: 2px;
-    border-radius: 1px;
-    background: var(--md-primary);
-    scale: 0 1;
-    transition: scale 0.35s var(--spring-fast);
+  /* The input has no ring of its own; the whole bar shows the site's focus ring instead */
+  .field:has(.input:focus-visible) {
+    outline: 3px solid var(--md-primary);
+    outline-offset: 3px;
+    animation: focus-ring 0.6s var(--effects);
   }
   .field:focus-within {
     border-radius: 1rem;
   }
-  .field:focus-within::after {
-    scale: 1 1;
+
+  .suggestions {
+    position: absolute;
+    z-index: 5;
+    inset: calc(100% + 0.5rem) 0 auto;
+    margin: 0;
+    padding: 0.5rem 0;
+    list-style: none;
+    border-radius: 1.5rem;
+    background: var(--md-surface-container);
+    box-shadow: 0 4px 16px color-mix(in srgb, var(--md-shadow, #000) 25%, transparent);
+    transform-origin: top;
+    animation: menu-in 0.4s var(--spring-fast);
+  }
+  .suggestions[hidden] {
+    display: none;
+  }
+  .suggestions li {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-height: 3rem;
+    padding: 0 1rem;
+    cursor: pointer;
+    transition: background 0.2s var(--effects);
+  }
+  .suggestions svg {
+    flex: none;
+    width: 1.5rem;
+    color: var(--md-on-surface-variant);
+    fill: currentColor;
+  }
+  .suggestions li[aria-selected="true"] {
+    background: var(--md-secondary-container);
+    color: var(--md-on-secondary-container);
+  }
+  .suggestions li[aria-selected="true"] svg {
+    color: inherit;
+  }
+  @media (hover: hover) {
+    .suggestions li:hover {
+      background: color-mix(in srgb, var(--md-on-surface) 10%, transparent);
+    }
   }
   @media (hover: hover) {
     .field:hover {
@@ -400,7 +518,8 @@ const icons = {
   }
   .input {
     flex: 1;
-    min-width: 8rem;
+    min-width: 4rem;
+    text-overflow: ellipsis;
     min-height: 2.5rem;
     padding: 0;
     border: 0;
