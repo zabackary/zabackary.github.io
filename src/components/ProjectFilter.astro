@@ -166,11 +166,14 @@ const icons = {
 </div>
 
 <template id="token-template">
-  <li class="token">
-    <svg viewBox="0 -960 960 960" aria-hidden="true"><path></path></svg>
-    <span></span>
-    <button type="button" class="remove">
-      <svg viewBox="0 -960 960 960" aria-hidden="true"><path d={icons.close}></path></svg>
+  <li>
+    <button type="button" class="token">
+      <Ripple />
+      <svg class="kind" viewBox="0 -960 960 960" aria-hidden="true"><path></path></svg>
+      <span></span>
+      <span class="x" aria-hidden="true">
+        <svg viewBox="0 -960 960 960"><path d={icons.close}></path></svg>
+      </span>
     </button>
   </li>
 </template>
@@ -231,20 +234,21 @@ const icons = {
     const now = new Set();
     for (const [kind, icon] of [["tag", icons.tag], ["lang", icons.globe]]) {
       for (const value of state[kind]) {
-        const token = template.content.firstElementChild.cloneNode(true);
+        const item = template.content.firstElementChild.cloneNode(true);
+        // The whole chip is the remove button
+        const token = item.querySelector(".token");
         token.dataset.kind = kind;
         now.add(kind + value);
         if (shownTokens && !shownTokens.has(kind + value)) token.classList.add("added");
-        token.querySelector("svg path").setAttribute("d", icon);
+        token.querySelector(".kind path").setAttribute("d", icon);
         token.querySelector("span").textContent = labelFor(value);
-        const remove = token.querySelector(".remove");
-        remove.setAttribute("aria-label", `Remove ${kind === "tag" ? "tag" : "language"} ${labelFor(value)}`);
-        remove.addEventListener("click", () => {
+        token.setAttribute("aria-label", `Remove ${kind === "tag" ? "tag" : "language"} ${labelFor(value)}`);
+        token.addEventListener("click", () => {
           state[kind] = state[kind].filter((v) => v !== value);
           update();
           input.focus();
         });
-        tokenList.append(token);
+        tokenList.append(item);
       }
     }
     shownTokens = now;
@@ -266,7 +270,7 @@ const icons = {
     // Reorder the DOM (not CSS `order`) so tab order matches what's on screen
     grid.append(...[...items].sort(sorts[state.sort]));
     empty.hidden = shown > 0;
-    count.textContent = `${shown} ${shown === 1 ? "project" : "projects"}`;
+    count.textContent = shown ? `${shown} ${shown === 1 ? "project" : "projects"}` : "";
   };
 
   const update = () => {
@@ -461,6 +465,7 @@ const icons = {
     z-index: 5;
     display: flex;
     align-items: flex-start;
+    justify-content: center;
     gap: 0.5rem;
     padding: 0.5rem 0;
   }
@@ -474,6 +479,7 @@ const icons = {
   .search {
     position: relative;
     flex: 1 1 14rem;
+    max-width: 36rem;
   }
   /* M3 search bar: a full-round tonal pill with a leading search icon and trailing clear */
   .field {
@@ -538,17 +544,59 @@ const icons = {
     padding: 0;
     list-style: none;
   }
+  .tokens li {
+    display: contents;
+  }
+  /* A selected chip: rounder than an unselected one, squaring off on hover and press */
   .token {
+    position: relative;
+    overflow: hidden;
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
     min-height: var(--chip-height);
     padding: 0 0.25rem 0 0.5rem;
-    border-radius: var(--chip-radius);
+    border: 0;
+    border-radius: var(--chip-selected-radius);
     background: var(--md-secondary-container);
     color: var(--md-on-secondary-container);
-    font-size: 0.875rem;
-    font-weight: 500;
+    font: 500 0.875rem var(--font);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition:
+      background 0.2s var(--effects),
+      border-radius 0.45s var(--spring-fast);
+  }
+  .token:active {
+    border-radius: var(--chip-radius);
+  }
+  @media (pointer: coarse) {
+    .token {
+      min-height: 2.75rem;
+    }
+  }
+  @media (hover: hover) {
+    .token:hover {
+      border-radius: var(--chip-radius);
+      background: color-mix(in srgb, var(--md-on-surface) 8%, var(--md-secondary-container));
+    }
+  }
+  /* The × is only a picture; the chip is the button. A true 1:1 circle. */
+  .x {
+    display: grid;
+    flex: none;
+    place-items: center;
+    width: 1.5rem;
+    aspect-ratio: 1;
+    border-radius: 50%;
+  }
+  .x svg {
+    width: 1rem;
+  }
+  @media (hover: hover) {
+    .token:hover .x {
+      background: color-mix(in srgb, currentColor 14%, transparent);
+    }
   }
   .token.added {
     animation: pop 0.45s var(--spring-fast);
@@ -559,12 +607,11 @@ const icons = {
       opacity: 0;
     }
   }
-  .token > svg {
+  .token > .kind {
     width: 1.125rem;
   }
 
-  /* Small round buttons: the visual is small, the tap target is padded out to 44px */
-  .remove,
+  /* Small round button: the visual is small, the tap target is padded out to 44px */
   .clear {
     position: relative;
     display: grid;
@@ -580,18 +627,10 @@ const icons = {
       background 0.2s var(--effects),
       border-radius 0.45s var(--spring-fast);
   }
-  .remove {
-    width: 1.5rem;
-    height: 1.5rem;
-  }
-  .remove::before,
   .clear::before {
     content: "";
     position: absolute;
     inset: -0.5rem;
-  }
-  .remove svg {
-    width: 1rem;
   }
   .clear {
     position: absolute;
@@ -609,12 +648,10 @@ const icons = {
     display: none;
   }
   /* Shape morph only, no scaling: the circle squares off on hover and press */
-  .remove:active,
   .clear:active {
     border-radius: 0.375rem;
   }
   @media (hover: hover) {
-    .remove:hover,
     .clear:hover {
       border-radius: 0.5rem;
       background: color-mix(in srgb, currentColor 14%, transparent);
@@ -663,6 +700,7 @@ const icons = {
     top: calc(100% + 0.25rem);
     right: 0;
     display: grid;
+    overflow: hidden; /* clips row highlights and ripples to the rounded corners */
     min-width: 10rem;
     padding: 0.5rem 0;
     border-radius: 1rem;
@@ -706,10 +744,14 @@ const icons = {
     -webkit-tap-highlight-color: transparent;
     transition: background 0.2s var(--effects);
   }
-  .menu button[aria-checked="true"],
-  .menu :global(li[aria-selected="true"]) {
+  /* Selected (the current sort) uses the container colour... */
+  .menu button[aria-checked="true"] {
     background: var(--md-secondary-container);
     color: var(--md-on-secondary-container);
+  }
+  /* ...so the suggestion you've arrowed to gets a plain state layer instead */
+  .menu :global(li[aria-selected="true"]) {
+    background: color-mix(in srgb, var(--md-on-surface) 12%, transparent);
   }
   /* A suggestion's icon sits where the menu's checkmark does */
   .menu :global(li svg) {
@@ -747,6 +789,7 @@ const icons = {
   .quick {
     display: flex;
     flex-wrap: wrap;
+    justify-content: center;
     gap: 0.5rem;
     margin: 0 0 0.75rem;
     padding: 0;
@@ -779,10 +822,14 @@ const icons = {
   .toggle[aria-pressed="true"] {
     border-color: transparent;
     background: var(--md-secondary-container);
+    border-radius: var(--chip-selected-radius);
     color: var(--md-on-secondary-container);
   }
   .toggle:active {
     border-radius: 0.9rem;
+  }
+  .toggle[aria-pressed="true"]:active {
+    border-radius: var(--chip-radius);
   }
   @media (pointer: coarse) {
     .toggle {
@@ -795,6 +842,7 @@ const icons = {
       background: color-mix(in srgb, var(--md-on-surface) 8%, transparent);
     }
     .toggle[aria-pressed="true"]:hover {
+      border-radius: var(--chip-radius);
       background: color-mix(in srgb, var(--md-on-surface) 8%, var(--md-secondary-container));
     }
   }
