@@ -1,8 +1,8 @@
 # Architecture
 
-> Summary: Static Astro site. About is the home page (`/`, with a tiled view of the 3 most recent projects and an online-accounts section and a languages section whose items link to filtered project lists, e.g. `/projects?language=rust&tags=web`); all projects are at `/projects`. Pages in `src/pages`, one `projects` content collection in `src/content/projects`, small scoped-style components in `src/components`, tokens and type in one global stylesheet. Page transitions are native CSS view transitions (`styles/transitions.css`); the only client JS is the `Ripple` custom element, a small WebGL shader. No UI library; M3 Expressive is implemented by hand. `src/assets/default-thumb.svg` is the editable source of the default thumbnail artwork, re-rendered to WebP with the ImageMagick command below. Images go through `astro:assets` (needs `sharp`). Project thumbnails default to `default-thumb.webp`.
+> Summary: Static Astro site. `displayNames.ts` turns lowercase tag/language names into display names. About is the home page (`/`, with a tiled view of the 3 most recent projects and an online-accounts section and a languages section whose items link to filtered project lists, e.g. `/projects?language=rust&tags=web`); all projects are at `/projects`. Pages in `src/pages`, one `projects` content collection in `src/content/projects`, small scoped-style components in `src/components`, tokens and type in one global stylesheet. Page transitions are native CSS view transitions (`styles/transitions.css`); the only client JS is the `Ripple` custom element, a small WebGL shader. No UI library; M3 Expressive is implemented by hand. `src/assets/default-thumb.svg` is the editable source of the default thumbnail artwork, re-rendered to WebP with the ImageMagick command below. Images go through `astro:assets` (needs `sharp`). Project thumbnails default to `default-thumb.webp`.
 
-Last updated: 2026-10-10
+Last updated: 2026-10-11
 
 ## Why bespoke CSS instead of `@material/web`
 
@@ -23,6 +23,7 @@ src/
   styles/global.css      tokens, base, type classes, tone roles, .grid, .prose
   theme.ts               seed colour; themeCss(hex): Material colour scheme as `--md-*` CSS; containerStyle
   pages/theme.css.ts     static endpoint: /theme.css, the site's `--md-*` tokens built from the seed
+  displayNames.ts        displayName(): lowercase tag/language names -> proper display (TypeScript, C++, ...)
   types.ts               shared types (Tone)
   transitions.ts         view-transition names pairing a project card with its hero
   assets/default-thumb.*  grayscale shapes artwork (SVG source + rendered WebP), see "Regenerating assets"
@@ -48,7 +49,7 @@ All have scoped `<style>`; they take colour from the surrounding tone, so they d
 | `Languages` | About-page section: "I speak / I'm learning" as two tonal columns of wobbling text blobs (learning ones are hollow and dashed), then the contexts as a conjoined stack of `calm` `Card`s (big outer corners, tight seams) with emoji `Blob`s and `ChipList`s for sub-items. Both use a centered `SectionHeader`. Data is arrays at the top of the file. Everything links to a filtered projects page: languages to `/projects?language=<slug>` (spoken languages like English have no link), contexts to `/projects?tags=<tag>`. A whole context card is one link (web dev), except Embedded, whose card isn't a link: its title and each chip (Arduino, Embedded Linux, VEX V5) link separately. A blob renders as a link (`href`), else a button (`tip` only), else plain text; link and button blobs ripple, and any `tip` shows a spring-in tooltip on hover/focus/tap. Hover tilts a blob; hovering the footnote highlights the starred languages (hover-only, decorative). |
 | `AccountCard` | Link `Card` with a tone-coloured round logo (`logo` slot, SVG filled with `currentColor`), service name and handle. |
 | `Divider` | Wavy `<hr>`: a tiled SVG mask filled with `color` (any CSS colour, default `var(--md-outline)`). Decorative, no interaction states. |
-| `IconButton` | Link with a Material Symbols arrow (inlined SVG, no font) on a 9-lobed cookie shape that turns on hover. Has a `Ripple`. |
+| `IconButton` | Link with an inlined SVG icon (slot; default is a Material Symbols arrow, no font) on a 9-lobed cookie shape that turns on hover. Has a `Ripple`. |
 | `HeroCard` | Big page header; default slot + named `aside` slot. |
 | `NavBar` | Sticky pill nav; marks the current page with `aria-current`. Links have a `Ripple`. |
 

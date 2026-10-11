@@ -5,6 +5,7 @@ interface Props {
   href: string;
   /** Icons have no text, so say what the button does. */
   label: string;
+  /** Slot: an `<svg aria-hidden>` icon, filled with currentColor. Defaults to an arrow. */
 }
 
 const { href, label } = Astro.props;
@@ -23,10 +24,14 @@ const cookie =
 <a class="icon-button" {href} aria-label={label}>
   <svg class="cookie" viewBox="-1 -1 2 2" aria-hidden="true"><path d={cookie} /></svg>
   <Ripple />
-  <!-- Material Symbols "arrow_forward" -->
-  <svg class="icon" viewBox="0 -960 960 960" aria-hidden="true">
-    <path d="M647-440H160v-80h487L423-744l57-56 320 320-320 320-57-56 224-224Z" />
-  </svg>
+  <span class="icon">
+    <slot>
+      <!-- Material Symbols "arrow_forward" -->
+      <svg viewBox="0 -960 960 960" aria-hidden="true">
+        <path d="M647-440H160v-80h487L423-744l57-56 320 320-320 320-57-56 224-224Z" />
+      </svg>
+    </slot>
+  </span>
 </a>
 
 <style>
@@ -48,8 +53,14 @@ const cookie =
   }
   .icon {
     position: relative;
+    display: grid;
     width: 1.5rem;
+  }
+  .icon :global(svg) {
     fill: currentColor;
+  }
+  .icon-button:active .cookie {
+    transform: scale(0.92);
   }
   /* The cookie turns one lobe on hover */
   @media (hover: hover) {

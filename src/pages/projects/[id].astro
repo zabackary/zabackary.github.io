@@ -5,8 +5,11 @@ import defaultThumbnail from "../../assets/default-thumb.webp";
 import Blob from "../../components/Blob.astro";
 import Button from "../../components/Button.astro";
 import ChipList from "../../components/ChipList.astro";
+import Tooltip from "../../components/Tooltip.astro";
+import IconButton from "../../components/IconButton.astro";
 import HeroCard from "../../components/HeroCard.astro";
 import Layout from "../../layouts/Layout.astro";
+import { displayName } from "../../displayNames";
 import { themeCss } from "../../theme";
 import { projectTransitions } from "../../transitions";
 
@@ -19,23 +22,106 @@ export async function getStaticPaths() {
 }
 
 const { project } = Astro.props;
-const { name, description, status, tags, glyph, color, link, thumbnail } =
-  project.data;
+const {
+  name,
+  description,
+  status,
+  tags,
+  glyph,
+  color,
+  link,
+  github,
+  liveSite,
+  thumbnail,
+  startDate,
+  endDate,
+  languages,
+  gallery,
+} = project.data;
 const { Content } = await render(project);
+const hasMeta = Boolean(
+  startDate || endDate || languages.length > 0 || tags.length > 0,
+);
+// Same filter URLs the About page links to
+const filterLinks = (param: string, values: string[]) =>
+  values.map((value) => ({
+    label: displayName(value),
+    href: `/projects?${param}=${encodeURIComponent(value.toLowerCase())}`,
+  }));
 const names = projectTransitions(project.id);
 ---
 
 <Layout title={`${name} — zabackary`} theme={color && themeCss(color)}>
-  <div class="header">
+  <div class="header" class:list={{ "has-meta": hasMeta }}>
     <HeroCard transitionName={names.container}>
       <p class="label">{status}</p>
       <h1 class="display">{name}</h1>
       <p class="description">{description}</p>
-      <ChipList items={tags} />
+      {
+        (github || liveSite) && (
+          <div class="links">
+            {github && (
+              <div class="link">
+                <IconButton href={github} label="GitHub repository">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
+                </svg>
+              </IconButton>
+                <Tooltip id="github-tip">GitHub repository</Tooltip>
+              </div>
+            )}
+            {liveSite && (
+              <div class="link">
+                <IconButton href={liveSite} label="Live site">
+                  <!-- Material Symbols "language" -->
+                  <svg viewBox="0 -960 960 960" aria-hidden="true">
+                    <path d="M480-80q-82 0-155-31.5t-127.500-86Q143-252 111.500-325T80-480q0-83 31.500-155.500t86-127Q252-817 325-848.500T480-880q83 0 155.500 31.500t127 86q54.500 54.500 86 127T880-480q0 82-31.500 155t-86 127.500q-54.500 54.500-127 86T480-80Zm0-82q26-36 45-75t31-83H404q12 44 31 83t45 75Zm-104-16q-18-33-31.500-68.500T322-320H204q29 50 72.500 87t99.500 55Zm208 0q56-18 99.500-55t72.500-87H638q-9 38-22.500 73.500T584-178ZM170-400h136q-3-20-4.500-39.500T300-480q0-21 1.500-40.500T306-560H170q-5 20-7.500 39.500T160-480q0 21 2.500 40.500T170-400Zm216 0h188q3-20 4.500-39.500T580-480q0-21-1.500-40.500T574-560H386q-3 20-4.500 39.500T380-480q0 21 1.500 40.500T386-400Zm268 0h136q5-20 7.500-39.500T800-480q0-21-2.500-40.500T790-560H654q3 20 4.500 39.500T660-480q0 21-1.500 40.500T654-400Zm-16-240h118q-29-50-72.500-87T584-782q18 33 31.500 68.500T638-640Zm-234 0h152q-12-44-31-83t-45-75q-26 36-45 75t-31 83Zm-200 0h118q9-38 22.500-73.500T376-782q-56 18-99.500 55T204-640Z" />
+                  </svg>
+                </IconButton>
+                <Tooltip id="live-site-tip">Live site</Tooltip>
+              </div>
+            )}
+          </div>
+        )
+      }
       <Blob slot="aside" size="large" transitionName={names.blob}>
         {glyph}
       </Blob>
     </HeroCard>
+    {
+      hasMeta && (
+        <dl class="meta" data-tone="secondary">
+          {startDate && (
+            <div>
+              <dt>Started</dt>
+              <dd>{startDate}</dd>
+            </div>
+          )}
+          {endDate && (
+            <div>
+              <dt>Finished</dt>
+              <dd>{endDate}</dd>
+            </div>
+          )}
+          {tags.length > 0 && (
+            <div>
+              <dt>Tags</dt>
+              <dd>
+                <ChipList items={filterLinks("tags", tags)} />
+              </dd>
+            </div>
+          )}
+          {languages.length > 0 && (
+            <div>
+              <dt>Languages</dt>
+              <dd>
+                <ChipList items={filterLinks("language", languages)} />
+              </dd>
+            </div>
+          )}
+        </dl>
+      )
+    }
     <div class="thumbnail">
       <Image src={thumbnail ?? defaultThumbnail} alt="" width={1600} />
     </div>
@@ -44,6 +130,23 @@ const names = projectTransitions(project.id);
   <article class="prose">
     <Content />
   </article>
+
+  {
+    gallery.length > 0 && (
+      <ul class="gallery">
+        {gallery.map(({ image, caption }) => (
+          <li>
+            <Image
+              src={image}
+              alt={caption}
+              widths={[400, 800]}
+              sizes="(min-width: 700px) 32rem, 50vw"
+            />
+          </li>
+        ))}
+      </ul>
+    )
+  }
 
   <div class="actions">
     <Button href="/projects" variant="tonal" data-back>
@@ -122,6 +225,62 @@ const names = projectTransitions(project.id);
   }
   .description {
     max-width: 32rem;
+  }
+  /* Joined to the hero: a small gap, with the touching corners squared off */
+  .has-meta :global(.hero) {
+    border-bottom-left-radius: 0.5rem;
+    border-bottom-right-radius: 0.5rem;
+  }
+  .links {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+  /* On the hero the buttons tint themselves from its tone, like chips */
+  .link {
+    position: relative;
+  }
+  .links :global(.icon-button) {
+    color: inherit;
+  }
+  .links :global(.cookie) {
+    fill: color-mix(in srgb, var(--fg) 12%, transparent);
+  }
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 2rem;
+    margin: 0.25rem 0 0;
+    padding: 1.25rem clamp(1.5rem, 5vw, 3.5rem);
+    border-radius: 0.5rem 0.5rem 3rem 3rem;
+    background: var(--bg);
+    color: var(--fg);
+  }
+  .meta dt {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0.8;
+  }
+  .meta dd {
+    margin: 0.25rem 0 0;
+    font-weight: 500;
+  }
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+    margin: 2rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .gallery :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 1.5rem;
+    background: var(--md-surface-container-high);
   }
   .actions {
     display: flex;
