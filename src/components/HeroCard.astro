@@ -39,4 +39,17 @@ const { tone = "primary", transitionName } = Astro.props;
   .text {
     max-width: 100%;
   }
+  /* On wide screens keep the aside on the right however long the text is, instead of wrapping below it. */
+  @media (min-width: 801px) {
+    .hero {
+      flex-wrap: nowrap;
+    }
+    .text {
+      flex: 1;
+      min-width: 0;
+    }
+    .hero > :global(:not(.text)) {
+      flex-shrink: 0;
+    }
+  }
 </style>
