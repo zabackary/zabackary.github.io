@@ -20,9 +20,11 @@ const Tag = href ? "a" : "span";
   .chip {
     position: relative;
     overflow: hidden;
-    display: inline-block;
-    padding: 0.2rem 0.75rem;
-    border-radius: 0.5rem;
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--chip-height);
+    padding: 0 var(--chip-pad);
+    border-radius: var(--chip-radius);
     background: color-mix(
       in srgb,
       var(--fg, var(--md-on-surface)) 12%,
