@@ -1,0 +1,77 @@
+---
+import Chip from "./Chip.astro";
+import Tooltip from "./Tooltip.astro";
+
+interface Props {
+  status: "finished" | "wip" | "incomplete";
+  /** Make it a button so keyboard and touch can reach the tooltip. Leave off inside links. */
+  focusable?: boolean;
+}
+
+const { status, focusable } = Astro.props;
+const labels = {
+  finished: "Finished",
+  wip: "Work in progress",
+  incomplete: "Incomplete",
+};
+const tipId = `status-tip-${crypto.randomUUID().slice(0, 8)}`;
+const Trigger = focusable ? "button" : "span";
+---
+
+<!-- The tooltip sits outside the chip, which clips its overflow -->
+<span class="wrap">
+  <Trigger class="trigger" type={focusable ? "button" : undefined}>
+    <Chip>
+      <svg viewBox="0 0 24 24" role="img" aria-label={labels[status]}>
+        {status === "finished" && <path d="M5 12.5l4.5 4.5L19 7.5" />}
+        {status === "wip" && (
+          <>
+            <circle cx="12" cy="12" r="9" />
+            <path class="fill" d="M12 3a9 9 0 0 1 0 18z" />
+          </>
+        )}
+        {status === "incomplete" && (
+          <circle cx="12" cy="12" r="9" stroke-dasharray="3.5 3.5" />
+        )}
+      </svg>
+    </Chip>
+  </Trigger>
+  <Tooltip id={tipId}>{labels[status]}</Tooltip>
+</span>
+
+<style>
+  .wrap {
+    position: relative;
+    display: inline-flex;
+  }
+  .trigger {
+    display: inline-flex;
+    padding: 0;
+    border: 0;
+    border-radius: var(--chip-radius);
+    background: none;
+    color: inherit;
+    font: inherit;
+    -webkit-tap-highlight-color: transparent;
+  }
+  button.trigger {
+    cursor: help;
+  }
+  button.trigger:focus-visible {
+    outline: 2px solid var(--fg, var(--md-on-surface));
+    outline-offset: 2px;
+  }
+  svg {
+    width: 1.125rem;
+    height: 1.125rem;
+    margin: 0 -0.25rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.25;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .fill {
+    fill: currentColor;
+  }
+</style>

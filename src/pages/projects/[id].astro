@@ -6,6 +6,7 @@ import Blob from "../../components/Blob.astro";
 import Button from "../../components/Button.astro";
 import ChipList from "../../components/ChipList.astro";
 import Tooltip from "../../components/Tooltip.astro";
+import StatusIcon from "../../components/StatusIcon.astro";
 import IconButton from "../../components/IconButton.astro";
 import HeroCard from "../../components/HeroCard.astro";
 import Layout from "../../layouts/Layout.astro";
@@ -54,7 +55,9 @@ const names = projectTransitions(project.id);
 <Layout title={`${name} — zabackary`} theme={color && themeCss(color)}>
   <div class="header" class:list={{ "has-meta": hasMeta }}>
     <HeroCard transitionName={names.container}>
-      <p class="label">{status}</p>
+      <div class="status">
+        <StatusIcon {status} focusable />
+      </div>
       <h1 class="display">{name}</h1>
       <p class="description">{description}</p>
       {
@@ -230,6 +233,9 @@ const names = projectTransitions(project.id);
   .has-meta :global(.hero) {
     border-bottom-left-radius: 0.5rem;
     border-bottom-right-radius: 0.5rem;
+  }
+  .status {
+    margin-bottom: 0.75rem;
   }
   .links {
     display: flex;
