@@ -40,6 +40,14 @@ Manage the background server with `astro dev stop`, `astro dev status`, and `ast
 
 Restart the dev server after adding or changing `src/content.config.ts`; the collection schema is only read at startup.
 
+To preview visually, use Firefox's headless screenshot mode against the dev server and write the image to the default Claude Code tmp dir (`/tmp/claude-$UID/`), then Read the PNG:
+
+```
+firefox --headless --no-remote --profile /tmp/claude-$UID/ffprofile --screenshot /tmp/claude-$UID/home.png --window-size=1280,800 http://localhost:4321/
+```
+
+The separate `--profile` is needed because plain headless Firefox refuses to start while another Firefox is open. Use a narrow `--window-size` (e.g. `390,844`) to check mobile. It captures a static render only, so hover/focus/active states still need a real browser.
+
 Typecheck with `pnpm astro check`. It needs TypeScript 6 (Astro's checker rejects TS 7), so don't bump `typescript` past 6.x yet.
 
 ## Astro documentation
