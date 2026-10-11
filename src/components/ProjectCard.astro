@@ -2,6 +2,7 @@
 import type { CollectionEntry } from "astro:content";
 import Blob from "./Blob.astro";
 import Card from "./Card.astro";
+import Chip from "./Chip.astro";
 import ChipList from "./ChipList.astro";
 import { displayName } from "../displayNames";
 import defaultThumbnail from "../assets/default-thumb.webp";
@@ -16,6 +17,11 @@ interface Props {
 const { project, compact } = Astro.props;
 const { name, description, glyph, color, status, tags, thumbnail } = project.data;
 const names = projectTransitions(project.id);
+const statusLabels = {
+  finished: "Finished",
+  wip: "Work in progress",
+  incomplete: "Incomplete",
+};
 ---
 
 <Card
@@ -28,7 +34,30 @@ const names = projectTransitions(project.id);
   <Blob transitionName={names.blob}>{glyph}</Blob>
   <h3>{name}</h3>
   {!compact && <p>{description}</p>}
-  {!compact && <ChipList items={[status, ...tags.map((tag) => displayName(tag, "tag"))]} />}
+  {
+    !compact && (
+      <ChipList items={tags.map((tag) => displayName(tag, "tag"))}>
+        <Chip>
+          <svg
+            class="status"
+            viewBox="0 0 24 24"
+            role="img"
+            aria-label={statusLabels[status]}
+          >
+            <title>{statusLabels[status]}</title>
+            {status === "finished" && <path d="M5 12.5l4.5 4.5L19 7.5" />}
+            {status === "wip" && (
+              <>
+                <circle cx="12" cy="12" r="9" />
+                <path class="fill" d="M12 3a9 9 0 0 1 0 18z" />
+              </>
+            )}
+            {status === "incomplete" && <circle cx="12" cy="12" r="9" stroke-dasharray="3.5 3.5" />}
+          </svg>
+        </Chip>
+      </ChipList>
+    )
+  }
 </Card>
 
 <style>
@@ -40,5 +69,18 @@ const names = projectTransitions(project.id);
   }
   p {
     margin: 0;
+  }
+  .status {
+    width: 1.125rem;
+    height: 1.125rem;
+    margin: 0 -0.25rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.25;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .status .fill {
+    fill: currentColor;
   }
 </style>

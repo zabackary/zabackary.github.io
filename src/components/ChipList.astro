@@ -10,6 +10,7 @@ const { items } = Astro.props;
 ---
 
 <div class="chips">
+  <slot />
   {items.map((item) =>
     typeof item === "string" ? (
       <Chip>{item}</Chip>
@@ -23,6 +24,9 @@ const { items } = Astro.props;
   .chips {
     display: flex;
     flex-wrap: wrap;
+    /* Otherwise spare height in a stretched card gets shared out between the chip rows */
+    align-content: flex-start;
+    align-items: flex-start;
     gap: 0.375rem;
   }
 </style>
