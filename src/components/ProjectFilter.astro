@@ -1,0 +1,692 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { displayName } from "../displayNames";
+import ProjectCard from "./ProjectCard.astro";
+import Ripple from "./Ripple.astro";
+
+interface Props {
+  projects: CollectionEntry<"projects">[];
+}
+
+const { projects } = Astro.props;
+
+// Shortcuts to the filters most worth reaching for
+const featuredTags = ["embedded", "web", "community"];
+const featuredLanguages = ["rust", "typescript"];
+
+const sortOptions = [
+  { value: "newest", label: "Newest" },
+  { value: "oldest", label: "Oldest" },
+  { value: "name", label: "Name A–Z" },
+];
+
+const sortDate = ({ data }: CollectionEntry<"projects">) =>
+  data.endDate ?? data.startDate ?? "";
+const known = {
+  tags: [...new Set(projects.flatMap((p) => p.data.tags))],
+  languages: [...new Set(projects.flatMap((p) => p.data.languages))],
+};
+
+// Material Symbols paths, 960 viewBox
+const icons = {
+  tag: "M856-390 570-104q-12 12-27 18t-30 6q-15 0-30-6t-27-18L103-457q-11-11-17-25.500T80-513v-287q0-33 23.500-56.500T160-880h287q16 0 31 6.500t26 17.500l352 353q12 12 17.500 27t5.500 30q0 15-5.500 29.500T856-390ZM513-160l286-286-353-354H160v286l353 354ZM260-640q25 0 42.500-17.500T320-700q0-25-17.500-42.500T260-760q-25 0-42.500 17.500T200-700q0 25 17.500 42.500T260-640Z",
+  globe:
+    "M480-80q-82 0-155-31.500t-127.500-86Q143-252 111.500-325T80-480q0-83 31.500-155.500t86-127Q252-817 325-848.500T480-880q83 0 155.500 31.500t127 86q54.500 54.500 86 127T880-480q0 82-31.500 155t-86 127.500q-54.500 54.500-127 86T480-80Zm0-82q26-36 45-75t31-83H404q12 44 31 83t45 75Zm-104-16q-18-33-31.500-68.500T322-320H204q29 50 72.500 87t99.500 55Zm208 0q56-18 99.500-55t72.500-87H638q-9 38-22.500 73.500T584-178ZM170-400h136q-3-20-4.500-39.500T300-480q0-21 1.500-40.500T306-560H170q-5 20-7.500 39.500T160-480q0 21 2.500 40.500T170-400Zm216 0h188q3-20 4.500-39.500T580-480q0-21-1.500-40.500T574-560H386q-3 20-4.500 39.500T380-480q0 21 1.500 40.500T386-400Zm268 0h136q5-20 7.500-39.500T800-480q0-21-2.500-40.500T790-560H654q3 20 4.500 39.500T660-480q0 21-1.500 40.500T654-400Zm-16-240h118q-29-50-72.500-87T584-782q18 33 31.500 68.500T638-640Zm-234 0h152q-12-44-31-83t-45-75q-26 36-45 75t-31 83Zm-200 0h118q9-38 22.500-73.500T376-782q-56 18-99.500 55T204-640Z",
+  search:
+    "M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.500-75.500T120-580q0-109 75.500-184.500T380-840q109 0 184.500 75.500T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.500-52.500T560-580q0-75-52.500-127.500T380-760q-75 0-127.500 52.500T200-580q0 75 52.500 127.500T380-400Z",
+  close:
+    "m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z",
+  sort: "M120-240v-80h240v80H120Zm0-200v-80h480v80H120Zm0-200v-80h720v80H120Z",
+};
+---
+
+<!-- Shown by the script below; without JS the controls would do nothing -->
+<search class="filter" hidden data-known={JSON.stringify(known)}>
+  <div class="bar">
+    <div class="field">
+      <svg class="leading" viewBox="0 -960 960 960" aria-hidden="true">
+        <path d={icons.search}></path>
+      </svg>
+      <ul class="tokens"></ul>
+      <input
+        type="text"
+        class="input"
+        aria-label="Search projects, tags and languages"
+        placeholder="Search, or add a tag or language"
+        enterkeyhint="search"
+        autocomplete="off"
+        spellcheck="false"
+      />
+      <button type="button" class="clear" aria-label="Clear filters" hidden>
+        <Ripple />
+        <svg viewBox="0 -960 960 960" aria-hidden="true"><path d={icons.close}></path></svg>
+      </button>
+    </div>
+
+    <div class="sort">
+      <button
+        type="button"
+        class="sort-button"
+        aria-haspopup="menu"
+        aria-expanded="false"
+        aria-label="Sort projects"
+      >
+        <Ripple />
+        <svg viewBox="0 -960 960 960" aria-hidden="true"><path d={icons.sort}></path></svg>
+      </button>
+      <div class="menu" role="menu" aria-label="Sort by" hidden>
+        {sortOptions.map(({ value, label }) => (
+          <button type="button" role="menuitemradio" data-sort={value} aria-checked="false">
+            <Ripple />
+            {label}
+          </button>
+        ))}
+      </div>
+    </div>
+
+    <ul class="quick" aria-label="Quick filters">
+    {featuredTags.map((tag) => (
+      <li>
+        <button type="button" class="toggle" data-kind="tag" data-value={tag} aria-pressed="false">
+          <Ripple />
+          <svg viewBox="0 -960 960 960" aria-hidden="true"><path d={icons.tag}></path></svg>
+          {displayName(tag)}
+        </button>
+      </li>
+    ))}
+    {featuredLanguages.map((language) => (
+      <li>
+        <button type="button" class="toggle" data-kind="lang" data-value={language} aria-pressed="false">
+          <Ripple />
+          <svg viewBox="0 -960 960 960" aria-hidden="true"><path d={icons.globe}></path></svg>
+          {displayName(language)}
+        </button>
+      </li>
+    ))}
+    </ul>
+  </div>
+</search>
+
+<p class="count" role="status"></p>
+
+<ul class="grid projects">
+  {projects.map((project) => (
+    <li
+      data-name={project.data.name.toLowerCase()}
+      data-text={`${project.data.name} ${project.data.description}`.toLowerCase()}
+      data-date={sortDate(project)}
+      data-tags={project.data.tags.join(",")}
+      data-langs={project.data.languages.join(",")}
+    >
+      <ProjectCard {project} />
+    </li>
+  ))}
+</ul>
+
+<p class="empty" hidden>No projects match those filters.</p>
+
+<template id="token-template">
+  <li class="token">
+    <svg viewBox="0 -960 960 960" aria-hidden="true"><path></path></svg>
+    <span></span>
+    <button type="button" class="remove">
+      <svg viewBox="0 -960 960 960" aria-hidden="true"><path d={icons.close}></path></svg>
+    </button>
+  </li>
+</template>
+
+<script define:vars={{ icons, names: Object.fromEntries([...known.tags, ...known.languages, ...featuredTags, ...featuredLanguages].map((n) => [n, displayName(n)])) }}>
+  const root = document.querySelector(".filter");
+  const input = root.querySelector(".input");
+  const field = root.querySelector(".field");
+  const tokenList = root.querySelector(".tokens");
+  const clear = root.querySelector(".clear");
+  const sortButton = root.querySelector(".sort-button");
+  const menu = root.querySelector(".menu");
+  const toggles = [...root.querySelectorAll(".toggle")];
+  const grid = document.querySelector(".projects");
+  const items = [...grid.children];
+  const count = document.querySelector(".count");
+  const empty = document.querySelector(".empty");
+  const template = document.getElementById("token-template");
+  const known = JSON.parse(root.dataset.known);
+
+  const sorts = {
+    newest: (a, b) => b.dataset.date.localeCompare(a.dataset.date),
+    oldest: (a, b) => (a.dataset.date || "~").localeCompare(b.dataset.date || "~"),
+    name: (a, b) => a.dataset.name.localeCompare(b.dataset.name),
+  };
+
+  // The URL is the source of truth: ?q=text&tag=web&tag=cli&lang=rust&sort=name
+  const state = { q: "", tag: [], lang: [], sort: "newest" };
+
+  const read = () => {
+    const params = new URLSearchParams(location.search);
+    state.q = params.get("q") ?? "";
+    state.tag = [...new Set(params.getAll("tag"))];
+    state.lang = [...new Set(params.getAll("lang"))];
+    state.sort = params.get("sort") in sorts ? params.get("sort") : "newest";
+  };
+
+  const write = () => {
+    const params = new URLSearchParams();
+    if (state.q) params.set("q", state.q);
+    state.tag.forEach((t) => params.append("tag", t));
+    state.lang.forEach((l) => params.append("lang", l));
+    if (state.sort !== "newest") params.set("sort", state.sort);
+    const query = params.toString();
+    history.replaceState(null, "", location.pathname + (query ? "?" + query : "") + location.hash);
+  };
+
+  const labelFor = (value) => names[value] ?? value;
+
+  // Only tokens that weren't there last time pop in
+  let shownTokens = null; // null on first render, so tokens from the URL don't pop
+  const renderTokens = () => {
+    tokenList.replaceChildren();
+    const now = new Set();
+    for (const [kind, icon] of [["tag", icons.tag], ["lang", icons.globe]]) {
+      for (const value of state[kind]) {
+        const token = template.content.firstElementChild.cloneNode(true);
+        token.dataset.kind = kind;
+        now.add(kind + value);
+        if (shownTokens && !shownTokens.has(kind + value)) token.classList.add("added");
+        token.querySelector("svg path").setAttribute("d", icon);
+        token.querySelector("span").textContent = labelFor(value);
+        const remove = token.querySelector(".remove");
+        remove.setAttribute("aria-label", `Remove ${kind === "tag" ? "tag" : "language"} ${labelFor(value)}`);
+        remove.addEventListener("click", () => {
+          state[kind] = state[kind].filter((v) => v !== value);
+          update();
+          input.focus();
+        });
+        tokenList.append(token);
+      }
+    }
+    shownTokens = now;
+  };
+
+  const apply = () => {
+    const words = state.q.toLowerCase().split(/\s+/).filter(Boolean);
+    let shown = 0;
+    for (const item of items) {
+      const tags = item.dataset.tags.split(",");
+      const langs = item.dataset.langs.split(",");
+      const match =
+        state.tag.every((t) => tags.includes(t)) &&
+        state.lang.every((l) => langs.includes(l)) &&
+        words.every((w) => item.dataset.text.includes(w));
+      item.hidden = !match;
+      if (match) shown++;
+    }
+    // Reorder the DOM (not CSS `order`) so tab order matches what's on screen
+    grid.append(...[...items].sort(sorts[state.sort]));
+    empty.hidden = shown > 0;
+    count.textContent = `${shown} ${shown === 1 ? "project" : "projects"}`;
+  };
+
+  const update = () => {
+    renderTokens();
+    for (const toggle of toggles) {
+      toggle.setAttribute("aria-pressed", String(state[toggle.dataset.kind].includes(toggle.dataset.value)));
+    }
+    for (const option of menu.querySelectorAll("[data-sort]")) {
+      option.setAttribute("aria-checked", String(option.dataset.sort === state.sort));
+    }
+    clear.hidden = !(state.q || state.tag.length || state.lang.length);
+    apply();
+    write();
+  };
+
+  const toggleValue = (kind, value) => {
+    const list = state[kind];
+    state[kind] = list.includes(value) ? list.filter((v) => v !== value) : [...list, value];
+  };
+
+  // "tag:web" / "lang:rust", or a bare word that exactly names a known tag, then a known language
+  const resolve = (text) => {
+    const [, prefix, rest] = text.toLowerCase().match(/^(?:(tag|lang):)?(.*)$/);
+    const word = rest.trim();
+    const matches = (kind, list) =>
+      list.find((v) => v === word || labelFor(v).toLowerCase() === word) && { kind, value: list.find((v) => v === word || labelFor(v).toLowerCase() === word) };
+    if (prefix === "tag") return matches("tag", known.tags);
+    if (prefix === "lang") return matches("lang", known.languages);
+    return matches("tag", known.tags) || matches("lang", known.languages);
+  };
+
+  const commitInput = () => {
+    const token = resolve(input.value.trim());
+    if (!token) return false;
+    if (!state[token.kind].includes(token.value)) state[token.kind].push(token.value);
+    input.value = "";
+    state.q = "";
+    return true;
+  };
+
+  input.addEventListener("input", () => {
+    state.q = input.value.trim();
+    update();
+  });
+  input.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      if (commitInput()) update();
+    } else if (event.key === "Backspace" && !input.value) {
+      // Like most token fields: backspace on an empty input removes the last token
+      const kind = state.lang.length ? "lang" : "tag";
+      if (state[kind].length) {
+        state[kind].pop();
+        update();
+      }
+    }
+  });
+  field.addEventListener("click", (event) => {
+    if (event.target === field || event.target === tokenList) input.focus();
+  });
+  toggles.forEach((toggle) =>
+    toggle.addEventListener("click", () => {
+      toggleValue(toggle.dataset.kind, toggle.dataset.value);
+      update();
+    }),
+  );
+  clear.addEventListener("click", () => {
+    state.q = "";
+    state.tag = [];
+    state.lang = [];
+    input.value = "";
+    update();
+    input.focus();
+  });
+
+  const setMenu = (open) => {
+    menu.hidden = !open;
+    sortButton.setAttribute("aria-expanded", String(open));
+  };
+  sortButton.addEventListener("click", () => {
+    setMenu(menu.hidden);
+    if (!menu.hidden) menu.querySelector('[aria-checked="true"]').focus();
+  });
+  menu.addEventListener("click", (event) => {
+    const option = event.target.closest("[data-sort]");
+    if (!option) return;
+    state.sort = option.dataset.sort;
+    setMenu(false);
+    sortButton.focus();
+    update();
+  });
+  menu.addEventListener("keydown", (event) => {
+    const options = [...menu.querySelectorAll("[data-sort]")];
+    const i = options.indexOf(document.activeElement);
+    if (event.key === "ArrowDown") options[(i + 1) % options.length].focus();
+    else if (event.key === "ArrowUp") options[(i - 1 + options.length) % options.length].focus();
+    else if (event.key === "Escape" || event.key === "Tab") {
+      setMenu(false);
+      if (event.key === "Escape") sortButton.focus();
+    } else return;
+    if (event.key !== "Tab") event.preventDefault();
+  });
+  document.addEventListener("click", (event) => {
+    if (!menu.hidden && !event.target.closest(".sort")) setMenu(false);
+  });
+
+  read();
+  input.value = state.q;
+  root.hidden = false;
+  update();
+</script>
+
+<style>
+  .filter {
+    display: grid;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+  .filter[hidden] {
+    display: none;
+  }
+  .bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  svg {
+    fill: currentColor;
+  }
+
+  /* M3 filled text field: tonal container, rounded top, active indicator underneath */
+  .field {
+    position: relative;
+    display: flex;
+    flex: 1 1 14rem;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.25rem 0.5rem;
+    min-height: 3.5rem;
+    padding: 0.5rem 0.5rem 0.5rem 1rem;
+    border-radius: 1.75rem;
+    background: var(--md-surface-container-high);
+    color: var(--md-on-surface);
+    cursor: text;
+    transition:
+      border-radius 0.45s var(--spring-fast),
+      background 0.2s var(--effects);
+  }
+  .field::after {
+    content: "";
+    position: absolute;
+    inset: auto 1.5rem 0;
+    height: 2px;
+    border-radius: 1px;
+    background: var(--md-primary);
+    scale: 0 1;
+    transition: scale 0.35s var(--spring-fast);
+  }
+  .field:focus-within {
+    border-radius: 1rem;
+  }
+  .field:focus-within::after {
+    scale: 1 1;
+  }
+  @media (hover: hover) {
+    .field:hover {
+      background: color-mix(in srgb, var(--md-on-surface) 8%, var(--md-surface-container-high));
+    }
+  }
+  .leading {
+    flex: none;
+    width: 1.5rem;
+    color: var(--md-on-surface-variant);
+  }
+  .input {
+    flex: 1;
+    min-width: 8rem;
+    min-height: 2.5rem;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+  }
+  .input::placeholder {
+    color: var(--md-on-surface-variant);
+  }
+  /* The field shows its own focus state; the global ring would sit around a borderless input */
+  .input:focus-visible {
+    outline: none;
+    animation: none;
+  }
+
+  .tokens {
+    display: contents;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .token {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    min-height: 2rem;
+    padding: 0 0.25rem 0 0.5rem;
+    border-radius: 0.5rem;
+    background: var(--md-secondary-container);
+    color: var(--md-on-secondary-container);
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+  .token.added {
+    animation: pop 0.45s var(--spring-fast);
+  }
+  .token[data-kind="lang"] {
+    background: var(--md-tertiary-container);
+    color: var(--md-on-tertiary-container);
+  }
+  @keyframes pop {
+    from {
+      scale: 0.6;
+      opacity: 0;
+    }
+  }
+  .token > svg {
+    width: 1.125rem;
+  }
+
+  /* Small round buttons: the visual is small, the tap target is padded out to 44px */
+  .remove,
+  .clear {
+    position: relative;
+    display: grid;
+    flex: none;
+    place-items: center;
+    border: 0;
+    border-radius: 50%;
+    background: none;
+    color: inherit;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition:
+      background 0.2s var(--effects),
+      scale 0.45s var(--spring-fast);
+  }
+  .remove {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+  .remove::before,
+  .clear::before {
+    content: "";
+    position: absolute;
+    inset: -0.5rem;
+  }
+  .remove svg {
+    width: 1rem;
+  }
+  .clear {
+    width: 2.5rem;
+    height: 2.5rem;
+    color: var(--md-on-surface-variant);
+  }
+  .clear svg {
+    width: 1.5rem;
+  }
+  .clear[hidden] {
+    display: none;
+  }
+  .remove:active,
+  .clear:active {
+    scale: 0.88;
+  }
+  @media (hover: hover) {
+    .remove:hover,
+    .clear:hover {
+      background: color-mix(in srgb, currentColor 14%, transparent);
+    }
+  }
+
+  .sort {
+    position: relative;
+  }
+  .sort-button {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 3.5rem;
+    height: 3.5rem;
+    border: 0;
+    border-radius: 1.75rem;
+    background: var(--md-surface-container-high);
+    color: var(--md-on-surface);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition:
+      border-radius 0.45s var(--spring-fast),
+      background 0.2s var(--effects);
+  }
+  .sort-button svg {
+    width: 1.5rem;
+  }
+  .sort-button[aria-expanded="true"] {
+    background: var(--md-secondary-container);
+    color: var(--md-on-secondary-container);
+    border-radius: 1rem;
+  }
+  .sort-button:active {
+    border-radius: 0.75rem;
+  }
+  @media (hover: hover) {
+    .sort-button:hover {
+      border-radius: 1rem;
+    }
+  }
+
+  .menu {
+    position: absolute;
+    z-index: 5;
+    top: calc(100% + 0.25rem);
+    right: 0;
+    display: grid;
+    min-width: 10rem;
+    padding: 0.5rem 0;
+    border-radius: 1rem;
+    background: var(--md-surface-container);
+    box-shadow: 0 4px 16px color-mix(in srgb, var(--md-shadow, #000) 25%, transparent);
+    transform-origin: top right;
+    animation: menu-in 0.4s var(--spring-fast);
+  }
+  .menu[hidden] {
+    display: none;
+  }
+  @keyframes menu-in {
+    from {
+      scale: 0.85;
+      opacity: 0;
+    }
+  }
+  .menu button {
+    position: relative;
+    overflow: hidden;
+    min-height: 3rem;
+    padding: 0 1rem 0 2.75rem;
+    border: 0;
+    background: none;
+    color: var(--md-on-surface);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: background 0.2s var(--effects);
+  }
+  /* Checkmark for the current choice */
+  .menu button[aria-checked="true"] {
+    font-weight: 700;
+    background: var(--md-secondary-container);
+    color: var(--md-on-secondary-container);
+  }
+  .menu button[aria-checked="true"]::before {
+    content: "";
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    width: 0.4rem;
+    height: 0.8rem;
+    border: solid currentColor;
+    border-width: 0 2px 2px 0;
+    transform: translateY(-65%) rotate(45deg);
+  }
+  .menu button:focus-visible {
+    outline-offset: -3px;
+  }
+  @media (hover: hover) {
+    .menu button:hover {
+      background: color-mix(in srgb, var(--md-on-surface) 10%, transparent);
+    }
+  }
+
+  /* Beside the field and sort button; wraps to its own row when there's no room */
+  .quick {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .toggle {
+    position: relative;
+    overflow: hidden;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: 2.5rem;
+    padding: 0 1rem 0 0.75rem;
+    border: 1px solid var(--md-outline-variant);
+    border-radius: 0.5rem;
+    background: none;
+    color: var(--md-on-surface-variant);
+    font: 500 0.875rem var(--font);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition:
+      background 0.2s var(--effects),
+      color 0.2s var(--effects),
+      border-color 0.2s var(--effects),
+      border-radius 0.45s var(--spring-fast);
+  }
+  .toggle svg {
+    width: 1.125rem;
+  }
+  .toggle[aria-pressed="true"] {
+    border-color: transparent;
+    background: var(--md-secondary-container);
+    color: var(--md-on-secondary-container);
+  }
+  .toggle[data-kind="lang"][aria-pressed="true"] {
+    background: var(--md-tertiary-container);
+    color: var(--md-on-tertiary-container);
+  }
+  .toggle:active {
+    border-radius: 1rem;
+  }
+  @media (hover: hover) {
+    .toggle:hover {
+      border-radius: 1rem;
+      background: color-mix(in srgb, var(--md-on-surface) 8%, transparent);
+    }
+    .toggle[aria-pressed="true"]:hover {
+      background: color-mix(in srgb, var(--md-on-surface) 8%, var(--md-secondary-container));
+    }
+    .toggle[data-kind="lang"][aria-pressed="true"]:hover {
+      background: color-mix(in srgb, var(--md-on-surface) 8%, var(--md-tertiary-container));
+    }
+  }
+
+  .count {
+    margin: 0 0 0.5rem;
+    font-size: 0.875rem;
+    color: var(--md-on-surface-variant);
+  }
+  .projects {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .projects > li {
+    display: grid;
+  }
+  .projects > li[hidden] {
+    display: none;
+  }
+  .empty {
+    margin: 2rem 0;
+    text-align: center;
+    color: var(--md-on-surface-variant);
+  }
+  .empty[hidden] {
+    display: none;
+  }
+  /* Without JS the count line has no text; don't leave a gap */
+  .count:empty {
+    display: none;
+  }
+</style>

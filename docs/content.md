@@ -1,6 +1,6 @@
 # Content
 
-> Summary: Projects are Markdown files in `src/content/projects/`, validated by the schema in `src/content.config.ts`. The file name becomes the URL (`/projects/<name>`). Copy is written by the owner; agents leave `TODO(copy)` placeholders. An optional `color` hex colours a project's card and themes its detail page. Optional `thumbnail` image (relative path) shows on cards and as the detail-page backdrop; the default artwork is used when absent. Optional `startDate`, `endDate`, `languages` fill a secondary-container metadata box joined to the bottom of the hero (tags too, as links to `/projects?tags=…`), `github` / `liveSite` add icon buttons under the hero description, and `gallery` (images + captions) renders as a 2-wide grid after the prose.
+> Summary: Projects are Markdown files in `src/content/projects/`, validated by the schema in `src/content.config.ts`. The file name becomes the URL (`/projects/<name>`). Copy is written by the owner; agents leave `TODO(copy)` placeholders. An optional `color` hex colours a project's card and themes its detail page. Optional `thumbnail` image (relative path) shows on cards and as the detail-page backdrop; the default artwork is used when absent. Optional `startDate`, `endDate`, `languages` fill a secondary-container metadata box joined to the bottom of the hero (tags too, as links to `/projects?tag=…`), `github` / `liveSite` add icon buttons under the hero description, and `gallery` (images + captions) renders as a 2-wide grid after the prose.
 
 Last updated: 2026-10-11
 

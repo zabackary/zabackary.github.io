@@ -20,8 +20,8 @@ interface Language {
 
 // Links win over tooltip buttons; both fall back to plain text
 const pillTag = ({ href, tip }: Language) => (href ? "a" : tip ? "button" : "span");
-const byLanguage =(language: string) => `/projects?language=${language}`;
-const byTags = (tags: string) => `/projects?tags=${tags}`;
+const byLanguage =(language: string) => `/projects?lang=${language}`;
+const byTags = (tag: string) => `/projects?tag=${tag}`;
 
 // TODO(copy): tooltip text (`tip`) for any language that should have one
 const speak: Language[] = [
