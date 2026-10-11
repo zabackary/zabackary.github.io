@@ -454,7 +454,7 @@ const icons = {
 </script>
 
 <style>
-  /* Sticks just under the nav pill. Its background hides cards scrolling beneath. */
+  /* Sticks just under the nav pill; no backdrop, the bar and button contrast enough on their own */
   .bar {
     position: sticky;
     top: 5rem;
@@ -463,7 +463,6 @@ const icons = {
     align-items: flex-start;
     gap: 0.5rem;
     padding: 0.5rem 0;
-    background: var(--md-surface);
   }
   .bar[hidden] {
     display: none;
