@@ -10,7 +10,6 @@ glyph: 🪧
 color: "#000080"
 github: https://github.com/zabackary/caj-signage
 githubPrivate: true
-liveSite: https://caj.ac.jp/signage/announcements.html
 thumbnail: ./assets/caj-signage/calendar.png
 gallery:
   - image: ./assets/caj-signage/announcements.png
