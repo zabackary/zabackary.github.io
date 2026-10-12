@@ -5,10 +5,14 @@ interface Props {
   href: string;
   /** Icons have no text, so say what the button does. */
   label: string;
+  /** Not a link: stays focusable (aria-disabled, not disabled) so a sibling `Tooltip` can say why. */
+  disabled?: boolean;
   /** Slot: an `<svg aria-hidden>` icon, filled with currentColor. Defaults to an arrow. */
 }
 
-const { href, label } = Astro.props;
+const { href, label, disabled } = Astro.props;
+
+const Tag = disabled ? "button" : "a";
 
 // A 9-lobed cookie: a circle whose radius wobbles nine times around
 const cookie =
@@ -21,9 +25,16 @@ const cookie =
   "Z";
 ---
 
-<a class="icon-button" {href} aria-label={label}>
+<Tag
+  class="icon-button"
+  class:list={{ disabled }}
+  href={disabled ? undefined : href}
+  type={disabled ? "button" : undefined}
+  aria-disabled={disabled ? "true" : undefined}
+  aria-label={label}
+>
   <svg class="cookie" viewBox="-1 -1 2 2" aria-hidden="true"><path d={cookie} /></svg>
-  <Ripple />
+  {!disabled && <Ripple />}
   <span class="icon">
     <slot>
       <!-- Material Symbols "arrow_forward" -->
@@ -32,7 +43,7 @@ const cookie =
       </svg>
     </slot>
   </span>
-</a>
+</Tag>
 
 <style>
   .icon-button {
@@ -59,13 +70,27 @@ const cookie =
   .icon :global(svg) {
     fill: currentColor;
   }
-  .icon-button:active .cookie {
+  button.icon-button {
+    padding: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+  }
+  .icon-button:active:not(.disabled) .cookie {
     transform: scale(0.92);
   }
   /* The cookie turns one lobe on hover */
   @media (hover: hover) {
-    .icon-button:hover .cookie {
+    .icon-button:hover:not(.disabled) .cookie {
       transform: rotate(40deg);
     }
+  }
+  /* Dimmed and inert: no ripple, no press or hover motion */
+  .disabled {
+    cursor: not-allowed;
+  }
+  .disabled .cookie,
+  .disabled .icon {
+    opacity: 0.45;
   }
 </style>

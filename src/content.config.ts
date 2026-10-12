@@ -21,6 +21,8 @@ const projects = defineCollection({
       link: z.url().optional(),
       // icon buttons under the hero description
       github: z.url().optional(),
+      // the repo exists but visitors can't open it: the button is shown disabled with a "Private" tooltip
+      githubPrivate: z.boolean().default(false),
       liveSite: z.url().optional(),
       // image path relative to the .md file; without one the project uses src/assets/default-thumb.webp
       thumbnail: image().optional(),
