@@ -17,7 +17,10 @@ const projects = defineCollection({
       // single emoji/glyph shown in the card's shape until screenshots exist
       glyph: z.string().default("✦"),
       // optional brand colour (harmonized toward the site colour): colours the card and themes the detail page
-      color: z.string().regex(/^#[0-9a-fA-F]{6}$/, "use a 6-digit hex like #3b82f6").optional(),
+      color: z
+        .string()
+        .regex(/^#[0-9a-fA-F]{6}$/, "use a 6-digit hex like #3b82f6")
+        .optional(),
       link: z.url().optional(),
       // icon buttons under the hero description
       github: z.url().optional(),
@@ -27,7 +30,17 @@ const projects = defineCollection({
       // image path relative to the .md file; without one the project uses src/assets/default-thumb.webp
       thumbnail: image().optional(),
       // shown after the prose; captions aren't rendered yet (used as alt text)
-      gallery: z.array(z.object({ image: image(), caption: z.string() })).default([]),
+      gallery: z
+        .array(
+          z.object({ caption: z.string() }).and(
+            z.union([
+              z.object({ image: image() }),
+              // accept a path for either mp4 or webm videos
+              z.object({ video: z.string().regex(/\.(mp4|webm)$/) }),
+            ]),
+          ),
+        )
+        .default([]),
     }),
 });
 
