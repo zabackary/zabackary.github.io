@@ -1,4 +1,5 @@
 ---
+import { cookiePath } from "../cookie";
 import Ripple from "./Ripple.astro";
 
 interface Props {
@@ -14,15 +15,6 @@ const { href, label, disabled } = Astro.props;
 
 const Tag = disabled ? "button" : "a";
 
-// A 9-lobed cookie: a circle whose radius wobbles nine times around
-const cookie =
-  "M" +
-  Array.from({ length: 180 }, (_, i) => {
-    const angle = (i / 180) * 2 * Math.PI;
-    const radius = 0.9 + 0.1 * Math.cos(9 * angle);
-    return `${(radius * Math.cos(angle)).toFixed(3)} ${(radius * Math.sin(angle)).toFixed(3)}`;
-  }).join("L") +
-  "Z";
 ---
 
 <Tag
@@ -33,7 +25,7 @@ const cookie =
   aria-disabled={disabled ? "true" : undefined}
   aria-label={label}
 >
-  <svg class="cookie" viewBox="-1 -1 2 2" aria-hidden="true"><path d={cookie} /></svg>
+  <svg class="cookie" viewBox="-1 -1 2 2" aria-hidden="true"><path d={cookiePath} /></svg>
   {!disabled && <Ripple />}
   <span class="icon">
     <slot>
