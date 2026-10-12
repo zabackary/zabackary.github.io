@@ -9,7 +9,7 @@ glyph: 🗓️
 color: "#abd75a"
 github: https://github.com/zabackary/horenso-space
 githubPrivate: true
-liveSite: https://horenso-space.vercel.app
+# liveSite: https://horenso-space.vercel.app
 thumbnail: ./assets/horenso-space/thumb.png
 gallery:
   - image: ./assets/horenso-space/thumb.png
