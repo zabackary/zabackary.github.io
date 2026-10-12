@@ -8,6 +8,7 @@ import ChipList from "../../components/ChipList.astro";
 import Tooltip from "../../components/Tooltip.astro";
 import StatusIcon from "../../components/StatusIcon.astro";
 import IconButton from "../../components/IconButton.astro";
+import Gallery from "../../components/Gallery.astro";
 import HeroCard from "../../components/HeroCard.astro";
 import Layout from "../../layouts/Layout.astro";
 import { displayName } from "../../displayNames";
@@ -141,33 +142,7 @@ const names = projectTransitions(project.id);
     <Content />
   </article>
 
-  {gallery.length > 0 && (
-    <ul class="gallery">
-      {gallery.map(({ caption, ...media }) => (
-        <li>
-          {"image" in media && (
-            <Image
-              src={media.image}
-              alt={caption}
-              widths={[400, 800]}
-              sizes="(min-width: 700px) 32rem, 50vw"
-            />
-          )}
-          {"video" in media && (
-            <video
-              src={media.video}
-              controls
-              playsinline
-              preload="metadata"
-              class="video"
-              autoplay
-              muted
-            ></video>
-          )}
-        </li>
-      ))}
-    </ul>
-  )}
+  {gallery.length > 0 && <Gallery items={gallery} />}
 
   <div class="actions">
     <Button href="/projects" variant="tonal" data-back>
@@ -287,22 +262,6 @@ const names = projectTransitions(project.id);
   .meta dd {
     margin: 0.25rem 0 0;
     font-weight: 500;
-  }
-  .gallery {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 0.75rem;
-    margin: 2rem 0 0;
-    padding: 0;
-    list-style: none;
-  }
-  .gallery :global(img),
-  .gallery :global(video) {
-    display: block;
-    width: 100%;
-    height: auto;
-    border-radius: 1.5rem;
-    background: var(--md-surface-container-high);
   }
   .actions {
     display: flex;

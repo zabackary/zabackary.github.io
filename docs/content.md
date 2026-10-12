@@ -1,8 +1,8 @@
 # Content
 
-> Summary: Projects are Markdown files in `src/content/projects/`, validated by the schema in `src/content.config.ts`. The file name becomes the URL (`/projects/<name>`). Copy is written by the owner; agents leave `TODO(copy)` placeholders (the older projects carry the owner's old text verbatim). An optional `color` hex colours a project's card and themes its detail page. Images live in `src/content/projects/assets/<project-name>/`. Optional `thumbnail` image (relative path) shows on cards and as the detail-page backdrop; the default artwork is used when absent. Optional `startDate`, `endDate`, `languages` fill a secondary-container metadata box joined to the bottom of the hero (tags too, as links to `/projects?tag=…`), `github` / `liveSite` add icon buttons under the hero description (`githubPrivate: true` shows the GitHub one disabled with a "Private" tooltip), and `gallery` (images + captions) renders as a 2-wide grid after the prose.
+> Summary: Projects are Markdown files in `src/content/projects/`, validated by the schema in `src/content.config.ts`. The file name becomes the URL (`/projects/<name>`). Copy is written by the owner; agents leave `TODO(copy)` placeholders (the older projects carry the owner's old text verbatim). An optional `color` hex colours a project's card and themes its detail page. Images live in `src/content/projects/assets/<project-name>/`. Optional `thumbnail` image (relative path) shows on cards and as the detail-page backdrop; the default artwork is used when absent. Optional `startDate`, `endDate`, `languages` fill a secondary-container metadata box joined to the bottom of the hero (tags too, as links to `/projects?tag=…`), `github` / `liveSite` add icon buttons under the hero description (`githubPrivate: true` shows the GitHub one disabled with a "Private" tooltip), and `gallery` (images + captions) renders after the prose as justified rows (`Gallery`) whose images open in a lightGallery lightbox.
 
-Last updated: 2026-10-11
+Last updated: 2026-10-12
 
 ## Adding a project
 
@@ -24,9 +24,9 @@ thumbnail: ./assets/kaiwa/thumb.webp   # optional; relative to this file. Defaul
 startDate: 2024-03        # optional; free-form string, shown as "Started"
 endDate: 2024-09          # optional; shown as "Finished"
 languages: [TypeScript, Rust] # optional; chips in the metadata box
-gallery:                  # optional; 2-wide grid after the prose
+gallery:                  # optional; justified rows after the prose, images open in a lightbox
   - image: ./assets/kaiwa/shot-1.webp
-    caption: Describes the image (used as alt text; not rendered visibly yet)
+    caption: Describes the image (alt text, and the lightbox caption unless it starts with TODO(copy))
 ---
 
 Markdown body shown on the detail page.

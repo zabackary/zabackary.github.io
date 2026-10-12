@@ -1,0 +1,201 @@
+---
+import { Image, getImage } from "astro:assets";
+
+type Item =
+  | { caption: string; image: ImageMetadata }
+  | { caption: string; video: string };
+
+interface Props {
+  items: Item[];
+}
+
+const { items } = Astro.props;
+
+// Captions still marked TODO(copy) stay out of the lightbox
+const escapeHtml = (text: string) =>
+  text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+const subHtml = (caption: string) =>
+  caption.startsWith("TODO(copy)") ? undefined : `<p>${escapeHtml(caption)}</p>`;
+
+// lightGallery only recognises a local video when the item has no src, so the empty data-src (after href) hides
+// the href from it; the href stays for no-JS visitors.
+const videoSource = (src: string) =>
+  JSON.stringify({
+    source: [{ src, type: src.endsWith(".webm") ? "video/webm" : "video/mp4" }],
+    attributes: { preload: "metadata", playsinline: true, controls: true },
+  });
+
+// Without JS the thumbnail is a plain link to the full-size image
+const [full, strip] = await Promise.all(
+  [2400, 240].map((width) =>
+    Promise.all(
+      items.map((item) =>
+        "image" in item ? getImage({ src: item.image, width }) : undefined,
+      ),
+    ),
+  ),
+);
+---
+
+<ul class="gallery" data-gallery>
+  {
+    items.map((item, i) => (
+      <li style={`--ratio: ${"image" in item ? item.image.width / item.image.height : 16 / 9}`}>
+        {"image" in item && (
+          <a
+            href={full[i]!.src}
+            data-lg-size={`${full[i]!.attributes.width}-${full[i]!.attributes.height}`}
+            data-thumb={strip[i]!.src}
+            data-sub-html={subHtml(item.caption)}
+          >
+            <Image
+              src={item.image}
+              alt={item.caption}
+              widths={[400, 800, 1200]}
+              sizes="(min-width: 700px) 24rem, 60vw"
+            />
+          </a>
+        )}
+        {"video" in item && (
+          <a
+            href={item.video}
+            data-src=""
+            data-video={videoSource(item.video)}
+            data-video-thumb
+            data-sub-html={subHtml(item.caption)}
+            aria-label={item.caption}
+          >
+            <video
+              src={item.video}
+              playsinline
+              preload="metadata"
+              autoplay
+              loop
+              muted
+            />
+          </a>
+        )}
+      </li>
+    ))
+  }
+</ul>
+
+<script>
+  import lightGallery from "lightgallery";
+  import lgZoom from "lightgallery/plugins/zoom";
+  import lgThumbnail from "lightgallery/plugins/thumbnail";
+  import lgVideo from "lightgallery/plugins/video";
+  import { cookiePath } from "../cookie";
+  import "lightgallery/css/lightgallery.css";
+  import "lightgallery/css/lg-zoom.css";
+  import "lightgallery/css/lg-thumbnail.css";
+  import "lightgallery/css/lg-video.css";
+
+  // A generic play icon in a cookie for the thumbnail strip, coloured from the page's tokens. The viewBox is
+  // 2.5x the cookie so it fills about 40% of the thumbnail.
+  function playThumb() {
+    const token = (name: string) =>
+      getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+    const svg =
+      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="-2.5 -2.5 5 5">' +
+      `<path fill="${token("--md-primary-container")}" d="${cookiePath}"/>` +
+      `<path fill="${token("--md-on-primary-container")}" d="M-0.22-0.38 0.42 0 -0.22 0.38Z"/></svg>`;
+    return "data:image/svg+xml," + encodeURIComponent(svg);
+  }
+
+  // Material Symbols (outlined, 400) in place of lightGallery's own icons
+  const symbol = (path: string) =>
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor"><path d="${path}"/></svg>`;
+  const zoomLens =
+    "M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.500-75.500T120-580q0-109 75.500-184.500T380-840q109 0 184.500 75.500T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.500-52.500T560-580q0-75-52.500-127.500T380-760q-75 0-127.500 52.500T200-580q0 75 52.500 127.500T380-400Z";
+  const icons = {
+    close: symbol("m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"),
+    prev: symbol("M560-240 320-480l240-240 56 56-184 184 184 184-56 56Z"),
+    next: symbol("M504-480 320-664l56-56 240 240-240 240-56-56 184-184Z"),
+    download: symbol("M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.500-23.500T160-240v-120h80v120h480v-120h80v120q0 33-23.500 56.500T720-160H240Z"),
+    more: symbol("M480-160q-33 0-56.500-23.500T400-240q0-33 23.500-56.500T480-320q33 0 56.500 23.500T560-240q0 33-23.500 56.500T480-160Zm0-240q-33 0-56.500-23.500T400-480q0-33 23.500-56.500T480-560q33 0 56.500 23.500T560-480q0 33-23.500 56.500T480-400Zm0-240q-33 0-56.500-23.500T400-720q0-33 23.500-56.500T480-800q33 0 56.500 23.500T560-720q0 33-23.500 56.500T480-640Z"),
+    zoomIn: symbol(`${zoomLens}M340-460v-80h-80v-80h80v-80h80v80h80v80h-80v80h-80Z`),
+    zoomOut: symbol(`${zoomLens}M260-540v-80h240v80H260Z`),
+    toggleThumbnails: symbol("M120-520v-320h320v320H120Zm0 400v-320h320v320H120Zm400-400v-320h320v320H520Zm0 400v-320h320v320H520ZM200-600h160v-160H200v160Zm400 0h160v-160H600v160Zm0 400h160v-160H600v160Zm-400 0h160v-160H200v160Z"),
+  };
+
+  const gallery = document.querySelector<HTMLElement>("[data-gallery]");
+  if (gallery) {
+    const thumb = playThumb();
+    gallery
+      .querySelectorAll<HTMLElement>("[data-video-thumb]")
+      .forEach((link) => link.setAttribute("data-thumb", thumb));
+    const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    lightGallery(gallery, {
+      selector: "a",
+      plugins: [lgZoom, lgThumbnail, lgVideo],
+      exThumbImage: "data-thumb",
+      icons,
+      speed: reduceMotion ? 0 : 400,
+      licenseKey: "0000-0000-000-0000",
+      // Captions come from data-sub-html (placeholders are left out)
+      getCaptionFromTitleOrAlt: false,
+      download: false,
+    });
+  }
+</script>
+
+<style>
+  /* Justified rows: each item grows in proportion to its aspect ratio, so every item in a row ends up the
+     same height whatever the viewport width. The ::after keeps a short last row from stretching. */
+  .gallery {
+    --row-height: clamp(9rem, 22vw, 15rem);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin: 2rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .gallery::after {
+    content: "";
+    flex-grow: 1e6;
+  }
+  li {
+    flex: calc(var(--ratio) * 100) 1 calc(var(--ratio) * var(--row-height));
+    min-width: min(100%, calc(var(--ratio) * 6rem));
+    /* A lone item on the last row can grow, but not into a giant */
+    max-width: min(100%, calc(var(--ratio) * var(--row-height) * 1.7));
+  }
+  a {
+    display: block;
+    border-radius: 1.5rem;
+    -webkit-tap-highlight-color: transparent;
+    transition: border-radius 0.45s var(--spring-fast);
+  }
+  a:focus-visible,
+  a:active {
+    border-radius: 0.75rem;
+  }
+  @media (hover: hover) {
+    a:hover {
+      border-radius: 0.75rem;
+    }
+  }
+  /* The lightbox lives outside this component, so its overrides need :global */
+  /* The extra .lg-container makes these win over lightGallery's CSS whatever order the stylesheets load in */
+  :global(.lg-container .lg-outer .lg-thumb-outer) {
+    background-color: var(--md-surface-container);
+  }
+  :global(.lg-container .lg-outer .lg-thumb-item.active),
+  :global(.lg-container .lg-outer .lg-thumb-item:hover) {
+    border-color: var(--md-primary);
+  }
+  img,
+  video {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: inherit;
+    background: var(--md-surface-container-high);
+  }
+  video {
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+  }
+</style>
