@@ -16,7 +16,13 @@ const names: Record<string, string> = {
   node: "Node.js",
   websockets: "WebSockets",
   cli: "CLI",
-  "vex-v5": "VEX V5",
+  vex: "VEX",
+  stuco: "Student Council",
+  "google-script": "Google Apps Script",
+  "chrome-extension": "Chrome Extension",
+  "singular-live": "Singular.Live",
+  "vibe-coded": "Vibe Coded",
+  "ai-assisted": "AI-assisted",
 };
 
 // Where a tag and a language share a slug, the tag reads differently: "web" the tag is the
@@ -25,7 +31,10 @@ const tagNames: Record<string, string> = {
   web: "Web",
 };
 
-export const displayName = (name: string, kind: "tag" | "language" = "language") => {
+export const displayName = (
+  name: string,
+  kind: "tag" | "language" = "language",
+) => {
   const key = name.toLowerCase();
   const known = (kind === "tag" && tagNames[key]) || names[key];
   if (known) return known;
