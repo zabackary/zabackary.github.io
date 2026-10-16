@@ -12,28 +12,19 @@ interface Props {
   color?: string;
   /** Makes the card a link. Otherwise it's a plain section. */
   href?: string;
-  /** Shared view-transition name; pairs this card with an element of the same name on the next page. */
-  transitionName?: string;
   /** Neutral surface colour, and no corner morph (hover tints). */
   calm?: boolean;
 }
 
-const { thumbnail, tone = "primary", color, href, transitionName, calm } = Astro.props;
+const { thumbnail, tone = "primary", color, href, calm } = Astro.props;
 const Tag = href ? "a" : "section";
-const style = [
-  color && containerStyle(color),
-  transitionName &&
-    `view-transition-name: ${transitionName}; view-transition-class: shared`,
-]
-  .filter(Boolean)
-  .join(";");
 ---
 
 <Tag
   class:list={["card", { calm }]}
   data-tone={color ? undefined : tone}
   href={href}
-  style={style || undefined}
+  style={color && containerStyle(color)}
 >
   {
     thumbnail && (

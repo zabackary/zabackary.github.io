@@ -6,7 +6,6 @@ import StatusIcon from "./StatusIcon.astro";
 import ChipList from "./ChipList.astro";
 import { displayName } from "../displayNames";
 import defaultThumbnail from "../assets/default-thumb.webp";
-import { projectTransitions } from "../transitions";
 
 interface Props {
   project: CollectionEntry<"projects">;
@@ -16,17 +15,16 @@ interface Props {
 
 const { project, compact } = Astro.props;
 const { name, description, glyph, color, status, tags, thumbnail } = project.data;
-const names = projectTransitions(project.id);
 ---
 
+<!-- No view-transition names here: the script in Layout names just the card being navigated to or from -->
 <Card
   href={`/projects/${project.id}`}
   color={compact ? undefined : color}
   calm={compact}
   thumbnail={thumbnail ?? defaultThumbnail}
-  transitionName={names.container}
 >
-  <Blob transitionName={names.blob}>{glyph}</Blob>
+  <Blob>{glyph}</Blob>
   <h3>{name}</h3>
   {!compact && <p>{description}</p>}
   {

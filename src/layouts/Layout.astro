@@ -29,6 +29,46 @@ const { title = "zabackary", theme } = Astro.props;
     <link rel="stylesheet" href="/theme.css" />
     <title>{title}</title>
     {theme && <style set:html={theme} />}
+    <!-- Inline in <head> so the pagereveal listener exists before the first render -->
+    <script is:inline>
+      // The card <-> hero morph only names the one project card being navigated to or from. Naming
+      // every card up front makes the browser snapshot all of them on each navigation, which gets
+      // slow with lots of projects. The detail page's hero and blob carry the same names statically.
+      let named = [];
+      const pathOf = (url) => new URL(url).pathname.replace(/\/$/, "");
+      const unname = () => {
+        for (const el of named) {
+          el.style.viewTransitionName = "";
+          el.style.viewTransitionClass = "";
+        }
+        named = [];
+      };
+      const nameCardFor = (url) => {
+        // Clear first: a page restored from the back/forward cache still has the old names
+        unname();
+        const path = pathOf(url);
+        // checkVisibility skips the hidden duplicate in RecentProjectsView
+        const card = [...document.querySelectorAll("a.card")].find(
+          (a) => pathOf(a.href) === path && a.checkVisibility(),
+        );
+        const blob = card?.querySelector(".blob");
+        if (!blob) return;
+        card.style.viewTransitionName = "project";
+        blob.style.viewTransitionName = "project-blob";
+        named = [card, blob];
+        for (const el of named) el.style.viewTransitionClass = "shared";
+      };
+
+      addEventListener("pageswap", (event) => {
+        if (event.viewTransition && event.activation?.entry) nameCardFor(event.activation.entry.url);
+      });
+      addEventListener("pagereveal", (event) => {
+        const from = window.navigation?.activation?.from;
+        if (!event.viewTransition || !from) return;
+        nameCardFor(from.url);
+        event.viewTransition.finished.finally(unname);
+      });
+    </script>
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>

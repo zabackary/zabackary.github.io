@@ -13,7 +13,6 @@ import HeroCard from "../../components/HeroCard.astro";
 import Layout from "../../layouts/Layout.astro";
 import { displayName } from "../../displayNames";
 import { themeCss } from "../../theme";
-import { projectTransitions } from "../../transitions";
 
 export async function getStaticPaths() {
   const projects = await getCollection("projects");
@@ -51,12 +50,12 @@ const filterLinks = (param: "tag" | "lang", values: string[]) =>
     label: displayName(value, param === "tag" ? "tag" : "language"),
     href: `/projects?${param}=${encodeURIComponent(value.toLowerCase())}`,
   }));
-const names = projectTransitions(project.id);
 ---
 
 <Layout title={`${name} — zabackary`} theme={color && themeCss(color)}>
   <div class="header" class:list={{ "has-meta": hasMeta }}>
-    <HeroCard transitionName={names.container}>
+    <!-- Pairs with the card named by the script in Layout -->
+    <HeroCard transitionName="project">
       <div class="status">
         <StatusIcon {status} focusable />
       </div>
@@ -97,7 +96,7 @@ const names = projectTransitions(project.id);
           )}
         </div>
       )}
-      <Blob slot="aside" size="large" transitionName={names.blob}>
+      <Blob slot="aside" size="large" transitionName="project-blob">
         {glyph}
       </Blob>
     </HeroCard>

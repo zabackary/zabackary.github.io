@@ -1,8 +1,8 @@
 # Architecture
 
-> Summary: Static Astro site. `/projects` has client-side search/filter/sort (`ProjectFilter`) driven by `?q`, repeated `tag` / `lang`, and `sort` params. `displayNames.ts` turns lowercase tag/language names into display names (`displayName(name, "tag")` for tags, where "web" reads "Web" rather than the language "HTML/CSS/JS"). About is the home page (`/`, with a tiled view of the 3 most recent projects and an online-accounts section and a languages section whose items link to filtered project lists, e.g. `/projects?lang=rust&tag=web`); all projects are at `/projects`. Pages in `src/pages`, one `projects` content collection in `src/content/projects`, small scoped-style components in `src/components`, tokens and type in one global stylesheet. Page transitions are native CSS view transitions (`styles/transitions.css`); client JS is lightGallery in `Gallery`, the `Ripple` custom element (a small WebGL shader) and the inline script in `ProjectFilter`. No UI library; M3 Expressive is implemented by hand. `src/assets/default-thumb.svg` is the editable source of the default thumbnail artwork, re-rendered to WebP with the ImageMagick command below. Images go through `astro:assets` (needs `sharp`). Project thumbnails default to `default-thumb.webp`.
+> Summary: Static Astro site. `/projects` has client-side search/filter/sort (`ProjectFilter`) driven by `?q`, repeated `tag` / `lang`, and `sort` params. `displayNames.ts` turns lowercase tag/language names into display names (`displayName(name, "tag")` for tags, where "web" reads "Web" rather than the language "HTML/CSS/JS"). About is the home page (`/`, with a tiled view of the 3 most recent projects and an online-accounts section and a languages section whose items link to filtered project lists, e.g. `/projects?lang=rust&tag=web`); all projects are at `/projects`. Pages in `src/pages`, one `projects` content collection in `src/content/projects`, small scoped-style components in `src/components`, tokens and type in one global stylesheet. Page transitions are native CSS view transitions (`styles/transitions.css`), with a small inline script in `Layout` that names only the card being navigated to or from (naming every card was slow with many projects); other client JS is lightGallery in `Gallery`, the `Ripple` custom element (a small WebGL shader) and the inline script in `ProjectFilter`. No UI library; M3 Expressive is implemented by hand. `src/assets/default-thumb.svg` is the editable source of the default thumbnail artwork, re-rendered to WebP with the ImageMagick command below. Images go through `astro:assets` (needs `sharp`). Project thumbnails default to `default-thumb.webp`.
 
-Last updated: 2026-10-12
+Last updated: 2026-10-16
 
 ## Why bespoke CSS instead of `@material/web`
 
@@ -14,7 +14,7 @@ Last updated: 2026-10-12
 src/
   content.config.ts      projects collection + zod schema
   content/projects/*.md  one file per project
-  layouts/Layout.astro   <head>, fonts, NavBar, <main>
+  layouts/Layout.astro   <head>, fonts, NavBar, <main>; inline script naming the project card for the card <-> hero morph
   pages/
     index.astro          About: hero, recent-projects view, accounts, bio, languages
     projects/index.astro project grid (all projects)
@@ -25,7 +25,6 @@ src/
   pages/theme.css.ts     static endpoint: /theme.css, the site's `--md-*` tokens built from the seed
   displayNames.ts        displayName(): lowercase tag/language names -> proper display (TypeScript, C++, ...)
   types.ts               shared types (Tone)
-  transitions.ts         view-transition names pairing a project card with its hero
   assets/default-thumb.*  grayscale shapes artwork (SVG source + rendered WebP), see "Regenerating assets"
 docs/                    you are here
 ```
