@@ -10,6 +10,7 @@ import Layout from "../layouts/Layout.astro";
 import Divider from "../components/Divider.astro";
 import OnlineAccounts from "../components/OnlineAccounts.astro";
 import Languages from "../components/Languages.astro";
+import SectionHeader from "../components/SectionHeader.astro";
 
 // Newest first; undated projects go last
 const recent = (await getCollection("projects"))
@@ -29,7 +30,11 @@ const recent = (await getCollection("projects"))
       zabackary.
     </h1>
     <div slot="aside" class="pfp">
-      <button type="button" aria-label="Profile picture" aria-describedby="pfp-tip">
+      <button
+        type="button"
+        aria-label="Profile picture"
+        aria-describedby="pfp-tip"
+      >
         <Blob size="large">
           <img src={pfp.src} alt="" width="288" height="288" />
         </Blob>
@@ -37,7 +42,6 @@ const recent = (await getCollection("projects"))
       <Tooltip id="pfp-tip">Yes, this is really my profile picture.</Tooltip>
     </div>
   </HeroCard>
-
   <h2 class="tagline">
     Just a student living in Japan doing embedded, web, and native apps.
   </h2>
@@ -58,19 +62,40 @@ const recent = (await getCollection("projects"))
 
   <Divider />
 
+  <SectionHeader align="center">Q&amp;A</SectionHeader>
   <div class="grid">
     <Card tone="secondary">
-      <h2 class="headline">What I do</h2>
+      <h2 class="headline">Who am I and what do I do?</h2>
       <p>
         I work on embedded systems, web apps, and normal native apps across a
         variety of programming languages and platforms, sometimes working for
         myself but usually in the service of others.
       </p>
     </Card>
+    <Card tone="secondary">
+      <h2 class="headline">Isn&apos;t this vibe coded?</h2>
+      <p>
+        Yes, nice catch -- it means your AI literacy is pretty good. This
+        website was created in Astro with Claude Code using Sonnset 5, Sonnet
+        5.5, and Opus 5.5. All copy was written by me. Yes, I did write that em
+        dash.
+      </p>
+    </Card>
+    <Card tone="secondary">
+      <h2 class="headline">Any favorite project?</h2>
+      <p>
+        Not a singular one, but I like{" "}
+        <a href="/projects/photo-booth">the photo booth software</a> I&apos;ve
+        been working on for over three years and{" "}
+        <a href="/projects/daktronics-singular-ui">some scoreboard software</a>{" "}
+        for its community impact and bare metal nature.
+      </p>
+    </Card>
   </div>
 
   <Divider />
 
+  <SectionHeader align="center">My languages</SectionHeader>
   <Languages />
 </Layout>
 
@@ -89,6 +114,15 @@ const recent = (await getCollection("projects"))
   }
   .grid {
     margin-top: 1rem;
+
+    h2 {
+      margin-top: 0;
+      margin-bottom: 0;
+    }
+    p {
+      margin-top: 0;
+      margin-bottom: 0;
+    }
   }
   .tagline {
     max-width: 30rem;

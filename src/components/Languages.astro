@@ -19,20 +19,47 @@ interface Language {
 }
 
 // Links win over tooltip buttons; both fall back to plain text
-const pillTag = ({ href, tip }: Language) => (href ? "a" : tip ? "button" : "span");
-const byLanguage =(language: string) => `/projects?lang=${language}`;
+const pillTag = ({ href, tip }: Language) =>
+  href ? "a" : tip ? "button" : "span";
+const byLanguage = (language: string) => `/projects?lang=${language}`;
 const byTags = (tag: string) => `/projects?tag=${tag}`;
 
 // TODO(copy): tooltip text (`tip`) for any language that should have one
 const speak: Language[] = [
-  { name: "Rust", href: byLanguage("rust"), tip: "Many projects, native and embedded" },
-  { name: "TypeScript", href: byLanguage("typescript"), tip: "Often with React, usually web" },
-  { name: "Python 3", href: byLanguage("python"), tip: "For quick and dirty scripts" },
-  { name: "JavaScript", href: byLanguage("javascript"), tip: "For web, NodeJS, and more recently Deno" },
+  {
+    name: "Rust",
+    href: byLanguage("rust"),
+    tip: "Many projects, native and embedded",
+  },
+  {
+    name: "TypeScript",
+    href: byLanguage("typescript"),
+    tip: "Often with React, usually web",
+  },
+  {
+    name: "Python 3",
+    href: byLanguage("python"),
+    tip: "For quick and dirty scripts",
+  },
+  {
+    name: "JavaScript",
+    href: byLanguage("javascript"),
+    tip: "For web, NodeJS, and more recently Deno",
+  },
   { name: "Kotlin", href: byLanguage("kotlin"), tip: "Kotlin DX is the best!" },
   { name: "HTML/CSS/JS", href: byLanguage("web"), tip: "The unavoidable" },
-  { name: "PHP", href: byLanguage("php"), legacy: true, tip: "Internship work on legacy systems" },
-  { name: "Java", href: byLanguage("java"), legacy: true, tip: "Reading Android apps" },
+  {
+    name: "PHP",
+    href: byLanguage("php"),
+    legacy: true,
+    tip: "Internship work on legacy systems",
+  },
+  {
+    name: "Java",
+    href: byLanguage("java"),
+    legacy: true,
+    tip: "Reading Android apps",
+  },
   { name: "English", tip: "My native language!" },
 ];
 
@@ -67,7 +94,6 @@ const contexts = [
 ];
 ---
 
-<SectionHeader align="center">My languages</SectionHeader>
 <section class="languages">
   <div class="table">
     <div class="column speak" data-tone="secondary">
