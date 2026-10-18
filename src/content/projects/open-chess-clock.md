@@ -13,7 +13,9 @@ liveSite: https://zabackary.github.io/open-chess-clock/
 thumbnail: ./assets/open-chess-clock/thumb.png
 gallery:
   - image: ./assets/open-chess-clock/thumb.png
-    caption: Screenshot of the live site
+    caption: Screenshot of the live site which can function independently or connect to the physical clock over USB
+  - image: ./assets/open-chess-clock/compact-edition.jpg
+    caption: An early version of the built clock, termed "compact edition" but not very compact.
 ---
 
 A simple chess clock for the _Arduino Uno_ (specifically the r3, though it

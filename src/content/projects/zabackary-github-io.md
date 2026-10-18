@@ -12,3 +12,7 @@ startDate: 2026-10
 ---
 
 As I wrap up my high school years, I found myself in need of a new portfolio website (partially for college applications, partially because I needed one anyways). Because I have been gifted a Claude Code subscription, I used Sonnet 5.5 (a very capable model for this use case) to create the site.
+
+It uses Material 3 styles with an expressive twist, but is not
+up to Material 3 spec -- looks close enough I think!
+Let me know what you think!

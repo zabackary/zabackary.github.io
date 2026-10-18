@@ -1,7 +1,7 @@
 ---
 name: "Scratch VM WASM Runtime"
 description: "A simple better Rust WASM VM for scratch-vm"
-status: finished # guessed from commit history; confirm
+status: finished
 startDate: 2023-08
 endDate: 2024-02
 languages: [rust]
@@ -15,11 +15,11 @@ For an explainer, please see [this documentation](https://github.com/zabackary/s
 
 Code outline:
 
-* `lib.rs` just binds the JS and the Rust code using `wasm-pack` and `wasm-bindgen`
-* `runner.rs` just iterates over the list of instructions and runs them
-* `execute_instruction.rs` executes individual instructions using a big `match` tree
-* `instruction.rs` contains definitions for the instructions and the `struct` for their representation
-* `scratch_value.rs` contains operations that act on Scratch-like polymorphic values.
+- `lib.rs` just binds the JS and the Rust code using `wasm-pack` and `wasm-bindgen`
+- `runner.rs` just iterates over the list of instructions and runs them
+- `execute_instruction.rs` executes individual instructions using a big `match` tree
+- `instruction.rs` contains definitions for the instructions and the `struct` for their representation
+- `scratch_value.rs` contains operations that act on Scratch-like polymorphic values.
 
 The entire thing is a stack-based interpreter.
 

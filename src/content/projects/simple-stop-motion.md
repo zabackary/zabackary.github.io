@@ -4,7 +4,7 @@ description: "A simple stop motion compiler for connecting images. As the spec f
 status: incomplete # guessed from commit history; confirm
 startDate: 2024-03
 endDate: 2024-08
-tags: [web]
+tags: [web, schoolwork]
 languages: [javascript]
 glyph: 🎞️
 color: "#5d5d60"
@@ -20,10 +20,10 @@ A simple tool to stitch images into videos on the web.
 
 Downsides of doing it using other tools:
 
-* Takes up lots of memory
-* Very finicky
-* Web standards not mature
+- Takes up lots of memory
+- Very finicky
+- Web standards not mature
 
 Upsides:
 
-* Most video editing software doesn't have a way to sequence images into one clip, making it hard.
+- Most video editing software doesn't have a way to sequence images into one clip, making it hard.

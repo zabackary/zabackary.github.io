@@ -10,10 +10,9 @@ color: "#beae66"
 thumbnail: ./assets/scratch-app/home.png
 gallery:
   - image: ./assets/scratch-app/home.png
-    caption: "TODO(copy): caption for home.png"
+    caption: "Home page featuring responsive design with activity boxes fetched from the API"
   - image: ./assets/scratch-app/messages.png
-    caption: "TODO(copy): caption for messages.png"
+    caption: "Messages with translations"
 ---
 
 Simple mobile client for Scratch, with messages and explore page, etc.
-

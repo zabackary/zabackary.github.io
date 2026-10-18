@@ -10,16 +10,16 @@ color: "#5865f2"
 thumbnail: ./assets/kaiwa/chat.png
 gallery:
   - image: ./assets/kaiwa/chat.png
-    caption: "TODO(copy): caption for chat.png"
+    caption: "Main chat interface"
   - image: ./assets/kaiwa/menu.png
-    caption: "TODO(copy): caption for menu.png"
+    caption: "Server menu"
 ---
 
 A simple chat app designed to be a better, WebSocket-powered way of chatting
-with friends at school. I didn't have time to finish it, so it's half-done with
-no server.
+with friends at school. I didn't have time to finish it so it's just a UI
+prototype.
 
-## What I'd do differently
+It was my introduction into the sad world of CRA[^1] + Webpack and happy world
+of React and reactive UI.
 
-Start with the server. The UI came together fast, but without a persistence
-layer there was nothing to demo.
+[^1]: Create React App

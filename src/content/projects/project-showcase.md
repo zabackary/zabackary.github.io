@@ -1,6 +1,6 @@
 ---
 name: Project Showcase
-description: portfolio website copy tbd
+description: First edition of my portfolio website
 status: finished
 startDate: 2021-11
 endDate: 2023-08
