@@ -54,7 +54,7 @@ const filterLinks = (param: "tag" | "lang", values: string[]) =>
 
 <Layout title={`${name} — zabackary`} theme={color && themeCss(color)}>
   <div class="header" class:list={{ "has-meta": hasMeta }}>
-    <!-- Pairs with the card named by the script in Layout -->
+    {/* Pairs with the card named by the script in Layout */}
     <HeroCard transitionName="project">
       <div class="status">
         <StatusIcon {status} focusable />
@@ -86,7 +86,7 @@ const filterLinks = (param: "tag" | "lang", values: string[]) =>
           {liveSite && (
             <div class="link">
               <IconButton href={liveSite} label="Live site">
-                <!-- Material Symbols "language" -->
+                {/* Material Symbols "language" */}
                 <svg viewBox="0 -960 960 960" aria-hidden="true">
                   <path d="M480-80q-82 0-155-31.5t-127.500-86Q143-252 111.500-325T80-480q0-83 31.500-155.500t86-127Q252-817 325-848.500T480-880q83 0 155.500 31.500t127 86q54.500 54.500 86 127T880-480q0 82-31.500 155t-86 127.500q-54.500 54.500-127 86T480-80Zm0-82q26-36 45-75t31-83H404q12 44 31 83t45 75Zm-104-16q-18-33-31.500-68.500T322-320H204q29 50 72.500 87t99.500 55Zm208 0q56-18 99.500-55t72.500-87H638q-9 38-22.500 73.500T584-178ZM170-400h136q-3-20-4.500-39.500T300-480q0-21 1.500-40.500T306-560H170q-5 20-7.500 39.500T160-480q0 21 2.500 40.500T170-400Zm216 0h188q3-20 4.500-39.500T580-480q0-21-1.500-40.500T574-560H386q-3 20-4.500 39.500T380-480q0 21 1.500 40.500T386-400Zm268 0h136q5-20 7.500-39.500T800-480q0-21-2.500-40.500T790-560H654q3 20 4.500 39.500T660-480q0 21-1.500 40.500T654-400Zm-16-240h118q-29-50-72.500-87T584-782q18 33 31.500 68.500T638-640Zm-234 0h152q-12-44-31-83t-45-75q-26 36-45 75t-31 83Zm-200 0h118q9-38 22.500-73.500T376-782q-56 18-99.500 55T204-640Z" />
                 </svg>

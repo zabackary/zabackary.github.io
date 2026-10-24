@@ -29,7 +29,7 @@ const { title = "zabackary", theme } = Astro.props;
     <link rel="stylesheet" href="/theme.css" />
     <title>{title}</title>
     {theme && <style set:html={theme} />}
-    <!-- Inline in <head> so the pagereveal listener exists before the first render -->
+    {/* Inline in <head> so the pagereveal listener exists before the first render */}
     <script is:inline>
       // The card <-> hero morph only names the one project card being navigated to or from. Naming
       // every card up front makes the browser snapshot all of them on each navigation, which gets

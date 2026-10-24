@@ -6,7 +6,7 @@ interface Props {
 const { id } = Astro.props;
 ---
 
-<!-- Put it after a focusable element, inside a `position: relative` parent. The element's `aria-describedby` points at `id`. -->
+{/* Put it after a focusable element, inside a `position: relative` parent. The element's `aria-describedby` points at `id`. */}
 <span class="tip" role="tooltip" {id}>
   <slot />
 </span>

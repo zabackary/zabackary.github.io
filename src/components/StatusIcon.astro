@@ -18,7 +18,7 @@ const tipId = `status-tip-${crypto.randomUUID().slice(0, 8)}`;
 const Trigger = focusable ? "button" : "span";
 ---
 
-<!-- The tooltip sits outside the chip, which clips its overflow -->
+{/* The tooltip sits outside the chip, which clips its overflow */}
 <span class="wrap">
   <Trigger class="trigger" type={focusable ? "button" : undefined}>
     <Chip>

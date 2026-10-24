@@ -17,7 +17,7 @@ const { project, compact } = Astro.props;
 const { name, description, glyph, color, status, tags, thumbnail } = project.data;
 ---
 
-<!-- No view-transition names here: the script in Layout names just the card being navigated to or from -->
+{/* No view-transition names here: the script in Layout names just the card being navigated to or from */}
 <Card
   href={`/projects/${project.id}`}
   color={compact ? undefined : color}
